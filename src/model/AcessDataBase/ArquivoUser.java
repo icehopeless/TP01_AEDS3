@@ -1,38 +1,55 @@
+package model.AcessDataBase;
+
+
+import control.Controller;
+import model.User;
+
 public class ArquivoUser extends Arquivo<User>{
     //Ws49 was here
     Arquivo<User> arqUsers;
     HashExtensivel<ParIDEMAIL> indiceIndiretoEMAIL;
-
+    private Controller controll;
     public ArquivoUser() throws Exception{
         super("users",User.class.getConstructor());
         indiceIndiretoEMAIL = new HashExtensivel<ParIDEMAIL>(
-            ParCPFID.class.getConstructor(), 
+            ParIDEMAIL.class.getConstructor(), 
             4, 
             ".\\dados\\users\\indiceEmail.d.db",   
             ".\\dados\\users\\indiceEmail.c.db"    
         );
+        
+    }
+
+    public void setControll(Controller controll) {
+        this.controll = controll;
     }
 
     @Override
-    public int create(User user){
-        int id = super.create(user);
-        indiceIndiretoEMAIL.create(new ParIDEMAIL(u.getEmail(),id));    
-        return id;
-    }
-    
-    public User read(String email){
-        ParIDEMAIL par = indiceIndiretoEMAIL.read(ParIDEMAIL.hash(email));
-        if(par == null){
-            return null;
+    public int create(User user) throws Exception{
+        
+        if(read(user.getEmail()) == null){            
+            int id = super.create(user);
+            indiceIndiretoEMAIL.create(new ParIDEMAIL(user.getEmail(),id));    
+            return id;
         }
 
-        return read(par.getId());
+        throw new IllegalArgumentException("Email já existente!");
+    }
+    
+    public User read(String email) throws Exception{
+        ParIDEMAIL par = indiceIndiretoEMAIL.read(ParIDEMAIL.hash(email));
+        User user = null;
+        if(par != null){
+            user = read(par.getId());
+        }
+
+        return user;
     }
 
 
     
     @Override
-    public boolean delete(int id){
+    public boolean delete(int id) throws Exception{
         User user = super.read(id);
         boolean rtn = false;
 
@@ -44,8 +61,8 @@ public class ArquivoUser extends Arquivo<User>{
         return rtn;   
     }
 
-    public boolean delete(String email){
-        ParIDEMAIL pIdemail = idindiceIndiretoEMAIL.read(ParIDEMAIL.hash(email));
+    public boolean delete(String email) throws Exception{
+        ParIDEMAIL pIdemail = indiceIndiretoEMAIL.read(ParIDEMAIL.hash(email));
         boolean rtn = false;
 
         if(pIdemail != null){

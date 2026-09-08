@@ -12,8 +12,7 @@ disciplina:
 Implementado pelo Prof. Marcos Kutova
 v1.1 - 2021
 */
-package aed3;
-
+package model.AcessDataBase;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -69,7 +68,7 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
       dos.writeShort(quantidade);
       int i = 0;
       while (i < quantidade) {
-        dos.write(elementos.get(i).toByteArray());
+        dos.write(elementos.get(i).serialize());
         i++;
       }
       byte[] vazio = new byte[bytesPorElemento];
@@ -92,7 +91,7 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
       while (i < quantidadeMaxima) {
         dis.read(dados);
         elem = construtor.newInstance();
-        elem.fromByteArray(dados);
+        elem.deserialize(dados);
         elementos.add(elem);
         i++;
       }

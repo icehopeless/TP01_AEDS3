@@ -1,29 +1,34 @@
 package model;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 
 //Ws49 was here
-public class User {
+public class User implements Registro {
     private int idUsuario;
     private String nome;
     private String email;
     private String hashSenha;
     private String perguntaSecreta;
-    private String hashRespostaSecreta;
+    private int hashRespostaSecreta;
 
-    public User(int id, String nome, String email, String hashSenha, String perguntaSecreta, String hashRespostaSecreta){
+    public User(int id, String nome, String email, String hashSenha, String perguntaSecreta, int hashRespostaSecreta){
         this.idUsuario = id;
         this.nome = nome;
         this.email = email;
         this.hashSenha = hashSenha;
         this.perguntaSecreta = perguntaSecreta;
-        this.hashRespostaSecreta = hashRespostaSecreta;
+        this.hashRespostaSecreta = Math.abs(hashRespostaSecreta);
     }
 
     public User(){        
-         User(-1,null,null,null,null,null);
+        this(-1,  null,null,null,null,-1);
     }
+
 
     public String getEmail(){
         return email;
@@ -44,7 +49,7 @@ public class User {
         return perguntaSecreta;
     }
 
-    public String getHashRespostaSecreta(){
+    public int getHashRespostaSecreta(){
         return hashRespostaSecreta;
     }
 
@@ -65,36 +70,48 @@ public class User {
 
     }
     
-    public void hashRespostaSecreta(String resposta){
+    public void setHashRespostaSecreta(int resposta){
         this.hashRespostaSecreta = resposta;
     }
 
-    public byte[] serialize(){
+    public byte[] serialize() throws IOException{
         ByteArrayOutputStream byteArrayOutputStream  = new ByteArrayOutputStream();
-        DataOutput dataWrite = new DataOutput(byteArrayOutputStream);
+        DataOutputStream dataWrite = new DataOutputStream(byteArrayOutputStream);
         
-        dataWrite.write(id);
+        dataWrite.writeInt(this.idUsuario);
         dataWrite.writeUTF(nome);
         dataWrite.writeUTF(email);
         dataWrite.writeUTF(hashSenha);
         dataWrite.writeUTF(perguntaSecreta);
-        dataWrite.writeUTF(hashRespostaSecreta);
+        dataWrite.writeInt(hashRespostaSecreta);
         
         return byteArrayOutputStream.toByteArray();
     }
 
-    public static User deserialize(byte[] b){
+
+    @Override
+    public void setId(int i) {
+      this.idUsuario = i;
+    }
+
+    @Override
+    public int getId() {
+        return idUsuario;
+    }
+
+    @Override
+    public void deserialize(byte[] b) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(b);
         DataInputStream dis = new DataInputStream(bais);
         
-        int id = dis.readInt();
-        String nome = dis.readUTF();
-        String email = dis.readUTF();
-        String hashSenha = dis.readUTF();
-        String perguntaSecreta = dis.readUTF();
-        String hashRespostaSecreta = dis.readUTF();
+        this.idUsuario = dis.readInt();
+        this.nome = dis.readUTF();
+        this.email = dis.readUTF();
+        this.hashSenha = dis.readUTF();
+        this.perguntaSecreta = dis.readUTF();
+        this.hashRespostaSecreta = dis.readInt();
         
-        return new User(id, nome, email, hashSenha, perguntaSecreta, hashRespostaSecreta);
+       
     }
 }
 

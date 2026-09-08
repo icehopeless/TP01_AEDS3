@@ -8,7 +8,7 @@ conter.
 Implementado pelo Prof. Marcos Kutova
 v1.1 - 2021
 */
-package aed3;
+package model.AcessDataBase;
 
 import java.io.IOException;
 
@@ -18,8 +18,8 @@ public interface RegistroHashExtensivel<T> {
 
   public short size(); // tamanho FIXO do registro
 
-  public byte[] toByteArray() throws IOException; // representação do elemento em um vetor de bytes
+  public byte[] serialize() throws IOException; // representação do elemento em um vetor de bytes
 
-  public void fromByteArray(byte[] ba) throws IOException; // vetor de bytes a ser usado na construção do elemento
+  public void deserialize(byte[] ba) throws IOException; // vetor de bytes a ser usado na construção do elemento
 
 }

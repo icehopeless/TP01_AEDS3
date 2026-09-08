@@ -1,9 +1,11 @@
-package aed3;
+package model.AcessDataBase;
 
 
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Constructor;
+
+import model.Registro;
 
 public class Arquivo<T extends Registro> {
     final int TAM_CABECALHO = 12;
@@ -44,8 +46,8 @@ public class Arquivo<T extends Registro> {
         arquivo.seek(0);
         arquivo.writeInt(proximoID);
         obj.setId(proximoID);
-        byte[] b = obj.toByteArray();
-
+        byte[] b = obj.serialize();
+       
         long endereco = getDeleted(b.length);   // tenta reusar algum espaço de registro excluído
         if(endereco == -1) {   // nenhum espaço disponível; escreve o registro no fim do arquivo  
             arquivo.seek(arquivo.length());
@@ -80,7 +82,7 @@ public class Arquivo<T extends Registro> {
                 tam = arquivo.readShort();
                 b = new byte[tam];
                 arquivo.read(b);
-                obj.fromByteArray(b);
+                obj.deserialize(b);
                 if(obj.getId()==id)
                     return obj;
             }
@@ -103,7 +105,7 @@ public class Arquivo<T extends Registro> {
                 tam = arquivo.readShort();
                 b = new byte[tam];
                 arquivo.read(b);
-                obj.fromByteArray(b);
+                obj.deserialize(b);
                 if(obj.getId()==id) {
                     if(indiceDireto.delete(id)) {
                         arquivo.seek(pie.getEndereco());
@@ -131,10 +133,10 @@ public class Arquivo<T extends Registro> {
                 tam = arquivo.readShort();
                 b = new byte[tam];
                 arquivo.read(b);
-                obj.fromByteArray(b);
+                obj.deserialize(b);
                 if(obj.getId()==novoObj.getId()) {
 
-                    byte[] b2 = novoObj.toByteArray();
+                    byte[] b2 = novoObj.serialize();
                     short tam2 = (short)b2.length;
 
                     // sobrescreve o registro

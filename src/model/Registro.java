@@ -1,5 +1,4 @@
-package aed3;
-
+package model;
 
 import java.io.IOException;
 

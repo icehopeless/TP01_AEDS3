@@ -1,3 +1,5 @@
+package model.AcessDataBase;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -28,7 +30,11 @@ public class ParIDEMAIL implements RegistroHashExtensivel<ParIDEMAIL> {
         return id;
     }
 
- 
+    
+    public static int hash(String email){
+        return Math.abs(email.hashCode());
+    }
+
     @Override
     public int hashCode() {
         return hash(this.email);
@@ -45,7 +51,7 @@ public class ParIDEMAIL implements RegistroHashExtensivel<ParIDEMAIL> {
     public byte[] serialize() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
-        dos.write(this.email.getBytes());
+        dos.writeUTF(this.email);
         dos.writeInt(this.id);
         return baos.toByteArray();
     }
@@ -53,15 +59,9 @@ public class ParIDEMAIL implements RegistroHashExtensivel<ParIDEMAIL> {
     public void deserialize(byte[] ba) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(ba);
         DataInputStream dis = new DataInputStream(bais);
-        byte[] b = new byte[11];
-        dis.read(b);
-        this.email = new String(b);
+        this.email = dis.readUTF();
         this.id = dis.readInt();
     }
 
-    public static int hash(String email){
-        long emailLong = Long.parseLong(email);
-        int hashValue = (int) (emailLong % (int)(1e9 + 7));
-        return Math.abs(hashValue);
-    }
+
 }
