@@ -20,7 +20,7 @@ public class ParIDEMAIL implements RegistroHashExtensivel<ParIDEMAIL> {
 
     public ParIDEMAIL(String email, int id) throws Exception {
         if(email.getBytes().length + 4 > TAMANHO){
-            throw new Exception("ERROR: EMAIL EXCEDE O TAMANHO!");
+            throw new Exception("ERROR: EMAIL EXCEDE O TAMANHO PERMITIDO!");
         }
         this.email = email;
         this.id = id;
