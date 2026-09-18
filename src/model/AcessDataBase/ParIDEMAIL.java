@@ -6,6 +6,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+
 public class ParIDEMAIL implements RegistroHashExtensivel<ParIDEMAIL> {
     
     private String email; // chave
@@ -18,6 +19,9 @@ public class ParIDEMAIL implements RegistroHashExtensivel<ParIDEMAIL> {
     }
 
     public ParIDEMAIL(String email, int id) throws Exception {
+        if(email.getBytes().length + 4 > TAMANHO){
+            throw new Exception("ERROR: EMAIL EXCEDE O TAMANHO!");
+        }
         this.email = email;
         this.id = id;
     }
@@ -51,7 +55,11 @@ public class ParIDEMAIL implements RegistroHashExtensivel<ParIDEMAIL> {
     public byte[] serialize() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
-        dos.writeUTF(this.email);
+        byte emailBytes[] = this.email.getBytes();
+        dos.write(emailBytes);
+        for(int i = emailBytes.length; i < TAMANHO - 4; i++){
+            dos.write(' ');
+        }
         dos.writeInt(this.id);
         return baos.toByteArray();
     }
@@ -59,7 +67,9 @@ public class ParIDEMAIL implements RegistroHashExtensivel<ParIDEMAIL> {
     public void deserialize(byte[] ba) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(ba);
         DataInputStream dis = new DataInputStream(bais);
-        this.email = dis.readUTF();
+        byte emailBytes [] = new byte[TAMANHO - 4];
+        dis.read(emailBytes);
+        this.email = new String(emailBytes).strip();
         this.id = dis.readInt();
     }
 
