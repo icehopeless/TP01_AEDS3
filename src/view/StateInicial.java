@@ -1,29 +1,27 @@
 package view;
 
-import java.util.Scanner;
-
-
+import control.SingletonUser;
 
 public class StateInicial extends StateView {
-    Scanner scan;
 
     public StateInicial(){
-        clearScreen();
-        scan = StateView.getTheSameScan();
+        SingletonUser.setUser(null);
     }
-
     @Override
     public void draw() {
         System.out.print(Layouts.MainMenu.getLayout());    
-        short op = scan.nextShort();
+        byte option = scan.nextByte();
         scan.nextLine();
         
-        if(op == 0){
+        if(option == 0){
             context.changeState(new StateLogin());
         }
-        if(op == 1){
+        if(option == 1){
             context.changeState(new StateCreateAccount());
         }
+
     }
+
+
     
 }

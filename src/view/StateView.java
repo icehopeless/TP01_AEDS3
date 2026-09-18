@@ -7,9 +7,11 @@ import control.Controller;
 public abstract class StateView {
     protected  ContextView context;
     protected  Controller control;
-    private static Scanner scan;
+    protected static Scanner scan;
+    protected static SingletonPWD singlePwd;
 
-    public static Scanner getTheSameScan(){
+    protected static Scanner getTheSameScan(){
+        
         if(scan == null){
             scan = new Scanner(System.in);
         }
@@ -18,8 +20,11 @@ public abstract class StateView {
     }
 
     public StateView(){
+        clearScreen();
+        singlePwd = SingletonPWD.getPwdObject();
         this.context = null;        
-        this.control = null;    
+        this.control = null;   
+        scan = StateView.getTheSameScan(); 
     }
 
     public void clearScreen(){
@@ -40,4 +45,5 @@ public abstract class StateView {
     }
     
     public abstract void draw();
+    
 }

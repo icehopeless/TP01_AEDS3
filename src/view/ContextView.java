@@ -3,35 +3,45 @@ package view;
 import control.Controller;
 
 public class ContextView {
-    private StateView state;
+    private StateView currentState;
+    private StateView nextState;
     private Controller control;
-    
+    private boolean hasNextState;
+
     public ContextView(StateView initialState){
-        this.state = initialState;
+        this.currentState = initialState;
+        this.nextState = null;
         this.control = null;
-        state.setContext(this);
-        state.setControl(control);
+        this.hasNextState = false;
+        currentState.setContext(this);
+        currentState.setControl(control);
     }
     
     public void setControl(Controller control) {
         this.control = control;
-        state.setControl(control);
-        render();
+        currentState.setControl(control);
     }
 
     public void changeState(StateView stView){
-        stView.setContext(this);
+        stView.setContext(this);        
+        this.nextState = stView;
         stView.setControl(control);
-        this.state = stView;
-        render();
+        hasNextState = true;
     }
 
     public Controller getControl() {
         return control;
     }
 
+    public void start(){
+        render();
+    }
     public void render(){
-        state.draw();
+        do{
+            hasNextState = false;
+            currentState.draw();            
+            this.currentState = this.nextState;
+        }while(hasNextState);
     }
 
     public void reportFail(Exception e){

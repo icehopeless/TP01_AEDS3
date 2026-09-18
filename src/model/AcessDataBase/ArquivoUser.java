@@ -83,8 +83,12 @@ public class ArquivoUser extends Arquivo<User>{
         boolean rtn = false;
 
         if(super.update(newUser)){
-            indiceIndiretoEMAIL.delete(ParIDEMAIL.hash(oldUser.getEmail()));
-            rtn = indiceIndiretoEMAIL.create(new ParIDEMAIL(newUser.getEmail(),newUser.getIdUsuario()));           
+            if(!newUser.getEmail().equals(oldUser.getEmail())){
+                indiceIndiretoEMAIL.delete(ParIDEMAIL.hash(oldUser.getEmail()));
+                rtn = indiceIndiretoEMAIL.create(new ParIDEMAIL(newUser.getEmail(),newUser.getIdUsuario()));           
+            }else{
+                rtn = true;
+            }            
         }
 
         return rtn;

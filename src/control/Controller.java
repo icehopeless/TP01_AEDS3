@@ -5,7 +5,6 @@ import model.User;
 import view.ContextView;
 import java.text.Normalizer;
 
-import Security.Crypt;
 
 public class Controller {
     private ContextView context;
@@ -16,9 +15,10 @@ public class Controller {
         this.managerModel = managerEntities;
         this.context.setControl(this);
         this.managerModel.setControl(this);
+        context.start();
     }
 
-    private boolean checkEmail(String email){
+    private boolean checkValidEmail(String email){
         boolean result = false;
         email = email.strip();
         if(email.length() > 0){
@@ -35,7 +35,7 @@ public class Controller {
     }
 
     public void addUser(User user) throws Exception{
-        if(checkEmail(user.getEmail())){
+        if(checkValidEmail(user.getEmail())){
             user.setPerguntaSecreta(normalizeResponse(user.getPerguntaSecreta()));
             user.setHashRespostaSecreta(user.getHashRespostaSecreta());
             managerModel.getArqUsers().create(user);
@@ -44,15 +44,53 @@ public class Controller {
         }
     }
 
-    public boolean updateUser(User newUser){return false;}
+    public boolean updateUser(User newUser){
+        if(newUser == null){
+            return false;
+        }
 
-    public boolean deleteUser(){return false;}
+        try {
+            if(!checkValidEmail(newUser.getEmail())){
+                throw new IllegalArgumentException("Erro: Email invalido");
+            }
+
+            newUser.setPerguntaSecreta(newUser.getPerguntaSecreta());
+            return managerModel.getArqUsers().update(newUser);
+        } catch (Exception e) {
+           context.reportFail(e);
+           return false; 
+        }
+    }
+
+    public boolean updateSenhaUser(String email, String newHashSenha){
+        try {
+            User user = managerModel.getArqUsers().read(email);
+            user.setHashSenha(newHashSenha); 
+            return managerModel.getArqUsers().update(user);
+        } catch (Exception e) {
+           context.reportFail(e);
+           return false; 
+        }
+    }
+
+    public boolean deleteUser(int id) throws Exception{
+        return managerModel.getArqUsers().delete(id);
+    }
     
-    public User searchUser(String email, String hashPassword) throws Exception{
+    public boolean findUser(String email) {
+        try {
+            return managerModel.getArqUsers().read(email) != null ? true : false;
+        } catch (Exception e) {
+            context.reportFail(e);
+            return false;
+        }
+    }
+
+    public User readUser(String email, String hashPassword) throws Exception{
         User user = managerModel.getArqUsers().read(email);
         if(user != null){
             if(!hashPassword.equalsIgnoreCase(user.getHashSenha())){
-                throw new IllegalAccessException("Error Senha ou Email inválidos!");
+                user = null;
             }
         }else{
             throw new IllegalAccessException("Error Senha ou Email inválidos!");
@@ -60,5 +98,17 @@ public class Controller {
       
         return user;
 
+    }
+
+    public String [] recoveryQuestion(String email) throws Exception{
+        User user = managerModel.getArqUsers().read(email);
+        if(user != null){
+            String vals [] = new String [2];
+            vals[0] = user.getPerguntaSecreta();
+            vals[1] = String.valueOf(user.getHashRespostaSecreta());
+            return vals;
+        }else{
+            throw new IllegalAccessException("Ocorreu um erro durante a recuperação!");
+        }
     }
 }
