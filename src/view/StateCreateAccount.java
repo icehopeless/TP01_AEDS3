@@ -45,11 +45,10 @@ public class StateCreateAccount extends StateView {
                 }
             }else{
                 System.out.println("Email já cadastrado tente novamente!");
-                System.out.println("Precione qualer tecla para retornar...");
+                System.out.println("Precione qualquer tecla para retornar...");
                 scan.nextLine();
-                context.changeState(new StateInicial());
+                context.changeState(new StateCreateAccount());
             }
         }
     }
-
 }
