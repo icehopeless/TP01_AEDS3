@@ -33,15 +33,19 @@ public class Controller {
     }
 
     public static String normalizeResponse(String resposta){
-        return Normalizer.normalize(resposta, Normalizer.Form.NFD)
+        return Normalizer.normalize(resposta.strip(), Normalizer.Form.NFD)
                 .replaceAll("\\p{M}", "")
                 .toLowerCase();
     }
 
+    public static int hashRespostaSecreta(String resposta){
+        return Math.abs(normalizeResponse(resposta).hashCode());
+    }
+
     public void addUser(User user) throws Exception{
         if(checkValidEmail(user.getEmail())){
-            user.setPerguntaSecreta(normalizeResponse(user.getPerguntaSecreta()));
-            user.setHashRespostaSecreta(user.getHashRespostaSecreta());
+            //user.setPerguntaSecreta(normalizeResponse(user.getPerguntaSecreta()));
+            //user.setHashRespostaSecreta(user.getHashRespostaSecreta());
             managerModel.getArqUsers().create(user);
         }else{
             throw new IllegalArgumentException("Erro : Email Inválido!");

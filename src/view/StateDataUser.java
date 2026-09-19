@@ -1,6 +1,7 @@
 package view;
 
 import Security.Crypt;
+import control.Controller;
 import control.SingletonUser;
 import model.User;
 
@@ -82,7 +83,7 @@ public class StateDataUser extends StateView {
             System.out.println("Digite a nova resposta secreta: ");
             String respostaSecreta = scan.nextLine();
             user.setPerguntaSecreta(perguntaSecreta);
-            user.setHashRespostaSecreta(Math.abs(respostaSecreta.hashCode()));
+            user.setHashRespostaSecreta(Controller.hashRespostaSecreta(respostaSecreta));
 
             if(control.updateUser(user)){
                 context.changeState(new StateDataUser());

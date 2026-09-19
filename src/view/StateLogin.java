@@ -1,6 +1,7 @@
 package view;
 
 import Security.Crypt;
+import control.Controller;
 import control.SingletonUser;
 import model.User;
 
@@ -38,7 +39,7 @@ public class StateLogin extends StateView {
                         
                         System.out.println("Número de tentativas " + count);
                         while(count > 0){
-                            hashDigitado = Math.abs(scan.nextLine().hashCode());
+                            hashDigitado = Controller.hashRespostaSecreta(scan.nextLine());
                             if(hash == hashDigitado){
                                 count = -1;
                             }else{                            

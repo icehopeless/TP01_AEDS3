@@ -2,6 +2,7 @@ package view;
 
 
 import Security.Crypt;
+import control.Controller;
 import model.User;
 
 public class StateCreateAccount extends StateView {
@@ -35,7 +36,7 @@ public class StateCreateAccount extends StateView {
                 System.out.print(Layouts.LINECOMAND.getLayout());
                 String resposta = scan.nextLine();
 
-                User user = new User(0, name, email, hashPass, pergunta, Math.abs(resposta.hashCode()));
+                User user = new User(0, name, email, hashPass, pergunta, Controller.hashRespostaSecreta(resposta));
                 try {
                     control.addUser(user);
                     context.changeState(new StateInicial());

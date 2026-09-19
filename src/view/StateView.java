@@ -13,7 +13,9 @@ public abstract class StateView {
     protected static Scanner getTheSameScan(){
         
         if(scan == null){
-            scan = new Scanner(System.in);
+            //aqui eu peguei a codificação e padronizei utf8 por cauda dos acentos 
+            String codificacao = System.getProperty("stdin.encoding", System.getProperty("native.encoding", "UTF-8"));
+            scan = new Scanner(System.in, codificacao);
         }
         
         return scan;
