@@ -2,8 +2,12 @@ package control;
 
 import model.ManagerEntities;
 import model.User;
+import model.AcessDataBase.ArquivoPergunta;
 import view.ContextView;
 import java.text.Normalizer;
+import model.Pergunta;
+import  java.util.ArrayList;
+
 
 
 public class Controller {
@@ -74,6 +78,11 @@ public class Controller {
     }
 
     public boolean deleteUser(int id) throws Exception{
+        // Cascata: apaga as perguntas antes do usuário, para não sobrar pergunta órfã
+        ArrayList<Pergunta> perguntas = managerModel.getArqPergunta().readByUser(id);
+        for(Pergunta p : perguntas){
+            managerModel.getArqPergunta().delete(p.getId());
+        }
         return managerModel.getArqUsers().delete(id);
     }
     
@@ -111,4 +120,73 @@ public class Controller {
             throw new IllegalAccessException("Ocorreu um erro durante a recuperação!");
         }
     }
+
+    private int idUserLogado() throws Exception{
+        return  SingletonUser.getInstanceUser().getId();
+    }
+
+    public ArrayList<Pergunta> listarMinhasPerguntas() throws Exception{
+        return   managerModel.getArqPergunta().readByUser(idUserLogado());
+    }
+
+    public int addPergunta(String text, String keyWord) throws Exception{
+        int idUsuario = idUserLogado();
+        text = text.strip();
+        keyWord = keyWord.strip();
+        if(text.isEmpty() ||   keyWord.isEmpty()){
+            throw new IllegalArgumentException("Conteudo da Pergunta ou das Palavras Chave vazio");
+        }else if(text.length() > 4000){
+            throw new  IllegalArgumentException("Pergunta excede o numero de caracteres");
+        }else if(keyWord.length() > 1000){
+            throw new  IllegalArgumentException("Palavras Chave excedem o numero de caracteres");
+        }else if(managerModel.getArqUsers().read(idUsuario) == null){
+            throw new IllegalArgumentException("Usuario não encontrado");
+        }else{
+            Pergunta p = new Pergunta(idUsuario, text, keyWord);
+            return  managerModel.getArqPergunta().create(p);
+        }
+    }
+
+    public boolean updatePergunta(Pergunta p, String newText, String newWords) throws Exception{
+        boolean resp;
+        if(p.getIdUsuario() != idUserLogado()){
+            throw new IllegalAccessException ("Usuario não correspondente");
+        }else if(!p.isAtiva()){
+            throw new IllegalAccessException ("Pergunta arquivada não pode ser alterada");
+        }
+
+        newText = newText.strip();
+        newWords = newWords.strip();
+        if(newText.isEmpty() && newWords.isEmpty()){
+            resp =  false;
+        }else if(newText.length() > 4000){
+            throw new IllegalArgumentException("Pergunta excede o numero de caracteres");
+        }else if(newWords.length() > 1000){
+            throw new IllegalArgumentException("Palavras Chave excedem o numero de caracteres");
+        }else{
+
+            if(!newText.isEmpty()){
+                p.setPergunta(newText);
+            }
+            if(!newWords.isEmpty()){
+                p.setPalavrasChave(newWords);
+            }
+            p.setAlteracao(System.currentTimeMillis());
+            resp = managerModel.getArqPergunta().update(p);
+        }
+        return resp;
+    }
+
+    public boolean arquivarPergunta(Pergunta p) throws Exception{
+        if(p.getIdUsuario() != idUserLogado()){
+            throw new IllegalAccessException ("Usuario não correspondente");
+        }else if(!p.isAtiva()){
+            throw new IllegalAccessException ("Pergunta já arquivada");
+        }
+        p.setAlteracao(System.currentTimeMillis());
+        p.arquivar();
+        return managerModel.getArqPergunta().update(p);
+    }
+
+
 }

@@ -12,15 +12,18 @@ public class StateMain extends StateView{
     @Override
     public void draw() {
         System.out.print(Layouts.UserMain.getLayout());
-        byte option = scan.nextByte();
-        scan.nextLine();
+        byte option = lerOpcao();
 
         if(option == 0){
             context.changeState(new StateAreaUser());
         }else if(option == 1){
             //context.changeState(StateQuestions);
-        }else if(option == 2){        
+            avisarEmConstrucao();
+            context.changeState(new StateMain());
+        }else if(option == 2){
             context.changeState(new StateInicial());
+        }else{
+            context.changeState(new StateMain());
         }
         
     }

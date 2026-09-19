@@ -19,9 +19,13 @@ public class SingletonPWD {
     }
 
     private void updatePWD(){
-        pwd = Layouts.PWD.getLayout();
-        pwd = pwd.substring(0,14) + "─".repeat(way.length() - 1) +pwd.replace("{}", way).substring(14);
-        pwd = pwd.substring(0,pwd.length() - 3) + "─".repeat(way.length() - 1) + "┘";
+        if(way.isEmpty()){
+            pwd = "";
+        }else{
+            pwd = Layouts.PWD.getLayout();
+            pwd = pwd.substring(0,14) + "─".repeat(way.length() - 1) +pwd.replace("{}", way).substring(14);
+            pwd = pwd.substring(0,pwd.length() - 3) + "─".repeat(way.length() - 1) + "┘";
+        }
     }
 
     public void push(String page){

@@ -12,17 +12,23 @@ public class StateAreaUser extends StateView {
     @Override
     public void draw() {
         System.out.print(Layouts.UserArea.getLayout());
-        byte option = scan.nextByte();
-        scan.nextLine();
+        byte option = lerOpcao();
 
         if(option == 0){
-            context.changeState(new StateDataUser());   
+            context.changeState(new StateDataUser());
         }else if(option == 1){
+            context.changeState(new StateQuestionsUser());
         }else if(option == 2){
+            avisarEmConstrucao();
+            context.changeState(new StateAreaUser());
         }else if(option == 3){
+            avisarEmConstrucao();
+            context.changeState(new StateAreaUser());
         }else if(option == 4){
             singlePwd.pop();
-            context.changeState(new StateMain());            
+            context.changeState(new StateMain());
+        }else{
+            context.changeState(new StateAreaUser());
         }
     }
     

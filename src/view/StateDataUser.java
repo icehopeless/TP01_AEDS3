@@ -43,10 +43,9 @@ public class StateDataUser extends StateView {
     public void draw() {
         System.out.println(getDataUser());
         System.out.print(Layouts.UserData.getLayout());
-        byte option = scan.nextByte();
-        scan.nextLine();
+        byte option = lerOpcao();
 
-        if(option == 0){ 
+        if(option == 0){
             System.out.println("Digite o novo nome: ");
             String novonome = scan.nextLine();
             
@@ -100,6 +99,8 @@ public class StateDataUser extends StateView {
                     if(scan.nextLine().equalsIgnoreCase("S")){
                         try {
                             if(control.deleteUser(user.getId())){
+                                singlePwd.pop();
+                                singlePwd.pop();
                                 context.changeState(new StateInicial());
                             }else{
                                 throw new Exception("Ocorreu um erro durante a exclusão");
@@ -107,12 +108,20 @@ public class StateDataUser extends StateView {
                         } catch (Exception e) {
                             context.reportFail(e);
                         }
+                    }else{
+                        context.changeState(new StateDataUser());
                     }
+                }else{
+                    context.changeState(new StateDataUser());
                 }
+            }else{
+                context.changeState(new StateDataUser());
             }
         }else if(option == 5){
             singlePwd.pop();
-            context.changeState(new StateAreaUser());            
+            context.changeState(new StateAreaUser());
+        }else{
+            context.changeState(new StateDataUser());
         }
     }
 }

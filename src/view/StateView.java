@@ -31,6 +31,22 @@ public abstract class StateView {
         System.out.print("\033[2J\033[H");
         System.out.flush();
     }
+
+    protected byte lerOpcao(){
+        byte option;
+        try {
+            option = Byte.parseByte(scan.nextLine().strip());
+        } catch (NumberFormatException e) {
+            option = -1;
+        }
+        return option;
+    }
+
+    protected void avisarEmConstrucao(){
+        System.out.println("Opção em construção!");
+        System.out.println("Pressione Enter para continuar...");
+        scan.nextLine();
+    }
     public void setContext(ContextView context) {
         this.context = context;
     }
