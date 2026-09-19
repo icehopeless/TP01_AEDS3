@@ -5,36 +5,45 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
-public class Pergunta implements Registro{
-    
+public class Pergunta implements Registro {
+
+    private static final DateTimeFormatter FORMATO_DATA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     private int id;
-    private String conteudo;
-    private int dataCriacao;
-    private short horaCriacao;
-    private int dataModificacao;
-    private short horaModificacao;
+    private int idUsuario;
+    private long criacao;
+    private long alteracao;
+    private short nota;
+    private String pergunta;
+    private String palavrasChave;
+    private boolean ativa;
 
     public Pergunta() {
         this.id = -1;
-        this.conteudo = "";
-        this.dataCriacao = 0;
-        this.horaCriacao = 0;
-        this.dataModificacao = 0;
-        this.horaModificacao = 0;
+        this.idUsuario = -1;
+        this.criacao = 0;
+        this.alteracao = 0;
+        this.nota = 0;
+        this.pergunta = "";
+        this.palavrasChave = "";
+        this.ativa = true;
     }
 
-
-    public Pergunta (int id, String conteudo, int dataCriacao, short horaCriacao, int dataModificacao, short horaModificacao) {
-        this.id = id;
-        this.conteudo = conteudo;
-        this.dataCriacao = dataCriacao;
-        this.horaCriacao = horaCriacao;
-        this.dataModificacao = dataModificacao;
-        this.horaModificacao = horaModificacao;
+    public Pergunta(int idUsuario, String pergunta, String palavrasChave) {
+        long agora = System.currentTimeMillis();
+        this.id = -1;
+        this.idUsuario = idUsuario;
+        this.criacao = agora;
+        this.alteracao = agora;
+        this.nota = 0;
+        this.pergunta = pergunta;
+        this.palavrasChave = palavrasChave;
+        this.ativa = true;
     }
-
 
     public int getId() {
         return id;
@@ -44,59 +53,75 @@ public class Pergunta implements Registro{
         this.id = id;
     }
 
-    public String getConteudo() {
-        return conteudo;
+    public int getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setConteudo(String conteudo) {
-        this.conteudo = conteudo;
+    public long getCriacao() {
+        return criacao;
     }
 
-    public int getDataCriacao() {
-        return dataCriacao;
+    public long getAlteracao() {
+        return alteracao;
     }
 
-
-    public void setDataCriacao(int dataCriacao) {
-        this.dataCriacao = dataCriacao;
+    public void setAlteracao(long alteracao) {
+        this.alteracao = alteracao;
     }
 
-
-    public short getHoraCriacao() {
-        return horaCriacao;
+    public short getNota() {
+        return nota;
     }
 
-    public void setHoraCriacao(short horaCriacao) {
-        this.horaCriacao = horaCriacao;
+    public String getPergunta() {
+        return pergunta;
     }
 
-    public int getDataModificacao() {
-        return dataModificacao;
+    public void setPergunta(String pergunta) {
+        this.pergunta = pergunta;
     }
 
-
-    public void setDataModificacao(int dataModificacao) {
-        this.dataModificacao = dataModificacao;
+    public String getPalavrasChave() {
+        return palavrasChave;
     }
 
-    public short getHoraModificacao() {
-        return horaModificacao;
+    public void setPalavrasChave(String palavrasChave) {
+        this.palavrasChave = palavrasChave;
     }
 
-    public void setHoraModificacao(short horaModificacao) {
-        this.horaModificacao = horaModificacao;
+    public boolean isAtiva() {
+        return ativa;
     }
 
+    public void arquivar() {
+        this.ativa = false;
+    }
+
+    public String getCriacaoFormatada() {
+        return formatarData(criacao);
+    }
+
+    public String getAlteracaoFormatada() {
+        return formatarData(alteracao);
+    }
+
+    private static String formatarData(long milissegundos) {
+        return Instant.ofEpochMilli(milissegundos).atZone(ZoneId.systemDefault()).format(FORMATO_DATA);
+    }
 
     @Override
     public String toString() {
         return String.format(
-            "ID..: %d%n"
-            + "Conteudo: %s%n"
-            + "Criacao: %d %d%n"
-            + "Modificacao: %d %d%n"
-        , id, conteudo, dataCriacao, 
-        horaCriacao, dataModificacao, horaModificacao);
+                "ID.............: %d%n"
+                        + "ID do usuario..: %d%n"
+                        + "Criacao........: %s%n"
+                        + "Alteracao......: %s%n"
+                        + "Nota...........: %d%n"
+                        + "Pergunta.......: %s%n"
+                        + "Palavras-chave.: %s%n"
+                        + "Ativa..........: %s%n",
+                id, idUsuario, getCriacaoFormatada(), getAlteracaoFormatada(),
+                nota, pergunta, palavrasChave, ativa ? "sim" : "nao");
     }
 
     @Override
@@ -105,26 +130,30 @@ public class Pergunta implements Registro{
         DataOutputStream dataStream = new DataOutputStream(byteStream);
 
         dataStream.writeInt(id);
-        dataStream.writeUTF(conteudo);
-        dataStream.writeInt(dataCriacao);
-        dataStream.writeShort(horaCriacao);
-        dataStream.writeInt(dataModificacao);
-        dataStream.writeShort(horaModificacao);
+        dataStream.writeInt(idUsuario);
+        dataStream.writeLong(criacao);
+        dataStream.writeLong(alteracao);
+        dataStream.writeShort(nota);
+        dataStream.writeUTF(pergunta);
+        dataStream.writeUTF(palavrasChave);
+        dataStream.writeBoolean(ativa);
 
         return byteStream.toByteArray();
     }
 
-    @Override 
+    @Override
     public void deserialize(byte[] data) throws IOException {
         ByteArrayInputStream byteStream = new ByteArrayInputStream(data);
         DataInputStream dataStream = new DataInputStream(byteStream);
 
         id = dataStream.readInt();
-        conteudo = dataStream.readUTF();
-        dataCriacao = dataStream.readInt();
-        horaCriacao = dataStream.readShort();
-        dataModificacao = dataStream.readInt();
-        horaModificacao = dataStream.readShort();
+        idUsuario = dataStream.readInt();
+        criacao = dataStream.readLong();
+        alteracao = dataStream.readLong();
+        nota = dataStream.readShort();
+        pergunta = dataStream.readUTF();
+        palavrasChave = dataStream.readUTF();
+        ativa = dataStream.readBoolean();
     }
 
 }

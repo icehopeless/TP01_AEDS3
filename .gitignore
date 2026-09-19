@@ -1,0 +1,3 @@
+# Arquivos de dados gerados pelo programa ao rodar (arquivo.db, índices, árvore B+).
+# Sem barra no início, vale para qualquer pasta "dados", tanto na raiz quanto em src/.
+dados/
