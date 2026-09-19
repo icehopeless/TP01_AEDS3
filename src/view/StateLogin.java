@@ -27,10 +27,17 @@ public class StateLogin extends StateView {
                 if(user != null){
                     SingletonUser.setUser(user);
                     context.changeState(new StateMain());
-                }else if(control.findUser(email)){
-                    System.out.println("Deseja recuperar sua senha? (s/n)" );
+                }else{
+                    System.out.println("Email ou senha incorretos!");
+                    System.out.println("   [0]  Tentar novamente");
+                    System.out.println("   [1]  Recuperar senha");
+                    System.out.println("   [2]  Retornar ao menu inicial");
+                    byte opcao = lerOpcao();
 
-                    if(scan.nextLine().equalsIgnoreCase("S")){
+                    if(opcao == 0){
+                        context.changeState(new StateLogin());
+                    }else if(opcao == 1 && control.findUser(email)){
+
                         int count = 3;                        
                         String vals [] = control.recoveryQuestion(email);
                         int hash = Integer.parseInt(vals[1]); 
@@ -59,6 +66,8 @@ public class StateLogin extends StateView {
                         }else{
                             context.changeState(new StateInicial());
                         }
+                    }else{
+                        context.changeState(new StateInicial());
                     }
                 }
             
