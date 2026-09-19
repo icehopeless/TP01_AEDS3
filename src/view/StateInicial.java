@@ -10,14 +10,14 @@ public class StateInicial extends StateView {
     @Override
     public void draw() {
         System.out.print(Layouts.MainMenu.getLayout());    
-        byte option = scan.nextByte();
-        scan.nextLine();
-        
+        byte option = lerOpcao();
+
         if(option == 0){
             context.changeState(new StateLogin());
-        }
-        if(option == 1){
+        }else if(option == 1){
             context.changeState(new StateCreateAccount());
+        }else if(option != 2){
+            context.changeState(new StateInicial());
         }
 
     }

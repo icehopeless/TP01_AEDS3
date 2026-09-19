@@ -137,6 +137,8 @@ public class Controller {
             throw new IllegalArgumentException("Conteudo da Pergunta ou das Palavras Chave vazio");
         }else if(text.length() > 4000){
             throw new  IllegalArgumentException("Pergunta excede o numero de caracteres");
+        }else if(keyWord.length() > 1000){
+            throw new  IllegalArgumentException("Palavras Chave excedem o numero de caracteres");
         }else if(managerModel.getArqUsers().read(idUsuario) == null){
             throw new IllegalArgumentException("Usuario não encontrado");
         }else{
@@ -159,6 +161,8 @@ public class Controller {
             resp =  false;
         }else if(newText.length() > 4000){
             throw new IllegalArgumentException("Pergunta excede o numero de caracteres");
+        }else if(newWords.length() > 1000){
+            throw new IllegalArgumentException("Palavras Chave excedem o numero de caracteres");
         }else{
 
             if(!newText.isEmpty()){

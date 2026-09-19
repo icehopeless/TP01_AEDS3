@@ -62,6 +62,18 @@ public enum Layouts {
                 "│                                                              │\r\n" + //
                 "└──────────────────────────────────────────────────────────────┘\r\n" + //
                 "\r\n" + Color.GREEN.getCode() +" TerminalMe "+ Color.PURPLE.getCode()+"> "),                
+    UserQuestions( Color.GREEN.getCode() +
+                "┌──────────────────────────────────────────────────────────────┐\r\n" + //
+                "│                                                              │\r\n" + //
+                "│   [0]  Listar                                                │\r\n" + //
+                "│   [1]  Incluir                                               │\r\n" + //
+                "│   [2]  Alterar                                               │\r\n" + //
+                "│   [3]  Arquivar                                              │\r\n" + //
+                "│                                                              │\r\n" + //
+                "│   [4]  Retornar ao menu anterior                             │\r\n" + //
+                "│                                                              │\r\n" + //
+                "└──────────────────────────────────────────────────────────────┘\r\n" + //
+                "\r\n" + Color.GREEN.getCode() +" TerminalMe "+ Color.PURPLE.getCode()+"> "),
     DesignTop(Color.GREEN.getCode() +
                 "┌──────────────────────────────────────────────────────────────┐\r\n" + //        
                 "│                                                              │\r\n"  //
