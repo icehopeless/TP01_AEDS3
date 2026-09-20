@@ -27,7 +27,8 @@ public class ArquivoUser extends Arquivo<User>{
     @Override
     public int create(User user) throws Exception{
         
-        if(read(user.getEmail()) == null){            
+        if(read(user.getEmail()) == null){    
+            new ParIDEMAIL(user.getEmail(),-1);        
             int id = super.create(user);
             indiceIndiretoEMAIL.create(new ParIDEMAIL(user.getEmail(),id));    
             return id;
@@ -83,11 +84,9 @@ public class ArquivoUser extends Arquivo<User>{
         boolean rtn = false;
         
         if(!newUser.getEmail().equals(oldUser.getEmail())){
-            System.out.println(indiceIndiretoEMAIL.read(ParIDEMAIL.hash(newUser.getEmail())));
                 if(indiceIndiretoEMAIL.read(ParIDEMAIL.hash(newUser.getEmail())) == null){
-
-                    indiceIndiretoEMAIL.delete(ParIDEMAIL.hash(oldUser.getEmail()));
-                    indiceIndiretoEMAIL.create(new ParIDEMAIL(newUser.getEmail(),newUser.getIdUsuario()));                      
+                    indiceIndiretoEMAIL.create(new ParIDEMAIL(newUser.getEmail(),newUser.getIdUsuario()));  
+                    indiceIndiretoEMAIL.delete(ParIDEMAIL.hash(oldUser.getEmail()));              
                 }else{
                     throw new Exception("Não é possível alocar este email: Email já cadastrado!");
                 }
