@@ -23,6 +23,9 @@ para o terminal. Neste TP1 o sistema cobre duas entidades:
 - **Perguntas**, que pertencem a um usuário. Cada usuário inclui, lista, altera e arquiva as
   próprias perguntas. As respostas e os votos ficam para o TP2, e as opções correspondentes do
   menu mostram "Opção em construção!".
+  
+### Apresentação do Sistema
+Link do vídeo: https://youtu.be/DJMiSdkOcdA 
 
 ### Organização do código
 
