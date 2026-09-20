@@ -81,15 +81,19 @@ public class ArquivoUser extends Arquivo<User>{
     public boolean update(User newUser) throws Exception{
         User oldUser = read(newUser.getIdUsuario());
         boolean rtn = false;
+        
+        if(!newUser.getEmail().equals(oldUser.getEmail())){
+            System.out.println(indiceIndiretoEMAIL.read(ParIDEMAIL.hash(newUser.getEmail())));
+                if(indiceIndiretoEMAIL.read(ParIDEMAIL.hash(newUser.getEmail())) == null){
 
-        if(super.update(newUser)){
-            if(!newUser.getEmail().equals(oldUser.getEmail())){
-                indiceIndiretoEMAIL.delete(ParIDEMAIL.hash(oldUser.getEmail()));
-                rtn = indiceIndiretoEMAIL.create(new ParIDEMAIL(newUser.getEmail(),newUser.getIdUsuario()));           
-            }else{
-                rtn = true;
-            }            
+                    indiceIndiretoEMAIL.delete(ParIDEMAIL.hash(oldUser.getEmail()));
+                    indiceIndiretoEMAIL.create(new ParIDEMAIL(newUser.getEmail(),newUser.getIdUsuario()));                      
+                }else{
+                    throw new Exception("Não é possível alocar este email: Email já cadastrado!");
+                }
         }
+            
+        rtn = super.update(newUser);                             
 
         return rtn;
     }

@@ -49,8 +49,8 @@ public class StateDataUser extends StateView {
         if(option == 0){
             System.out.println("Digite o novo nome: ");
             String novonome = scan.nextLine();
-            
             user.setNome(novonome);
+
             if(control.updateUser(user)){
                 context.changeState(new StateDataUser());
             }else{
@@ -60,17 +60,17 @@ public class StateDataUser extends StateView {
             System.out.println("Digite o novo email: ");
             String email = scan.nextLine();
             
-            user.setEmail(email);
-            if(control.updateUser(user)){
-                context.changeState(new StateDataUser());
-            }else{
-                context.reportFail(new Exception("Ocorreu um erro durante a atualização!"));
+            User newUser = new User(user.getId(), user.getNome(), email, user.getHashSenha(), user.getPerguntaSecreta(),user.getHashRespostaSecreta());
+            if(control.updateUser(newUser)){
+                SingletonUser.setUser(newUser);
+                newUser = null;
+                context.changeState(new StateDataUser());                
             }
         }else if(option == 2){
             System.out.println("Digite a nova senha: ");
-            String novasenha = Crypt.getSHA256(scan.nextLine().toLowerCase());
+            String novaHashSenha = Crypt.getSHA256(scan.nextLine().toLowerCase());
             
-            user.setHashSenha(novasenha);
+            user.setHashSenha(novaHashSenha);
             if(control.updateUser(user)){
                 context.changeState(new StateDataUser());
             }else{
@@ -82,6 +82,7 @@ public class StateDataUser extends StateView {
             
             System.out.println("Digite a nova resposta secreta: ");
             String respostaSecreta = scan.nextLine();
+            
             user.setPerguntaSecreta(perguntaSecreta);
             user.setHashRespostaSecreta(Controller.hashRespostaSecreta(respostaSecreta));
 

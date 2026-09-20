@@ -33,9 +33,6 @@ public class ContextView {
         return control;
     }
 
-    public void start(){
-        render();
-    }
     public void render(){
         do{
             hasNextState = false;
@@ -44,8 +41,19 @@ public class ContextView {
         }while(hasNextState);
     }
 
+    public void start(){
+        render();
+    }
+
     public void reportFail(Exception e){
+        currentState.clearScreen();
         System.out.println(e.getMessage());
+        try {
+            Thread.sleep(1000);
+        } catch (Exception ex) {
+            System.out.println("Erro ao tentar lag!");
+        }
+        
         render();
     }
 }

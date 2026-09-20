@@ -62,7 +62,7 @@ public class Controller {
                 throw new IllegalArgumentException("Erro: Email invalido");
             }
 
-            newUser.setPerguntaSecreta(newUser.getPerguntaSecreta());
+          //  newUser.setPerguntaSecreta(newUser.getPerguntaSecreta());
             return managerModel.getArqUsers().update(newUser);
         } catch (Exception e) {
            context.reportFail(e);
