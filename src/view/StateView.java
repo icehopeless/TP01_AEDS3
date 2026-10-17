@@ -45,6 +45,21 @@ public abstract class StateView {
         return option;
     }
 
+    protected String lerTexto(){
+        StringBuilder texto = new StringBuilder();
+        System.out.print(Layouts.LINECOMAND.getLayout());
+        String linha = scan.nextLine();
+        while(!linha.isBlank()){
+            if(texto.length() > 0){
+                texto.append("\n");
+            }
+            texto.append(linha);
+            System.out.print(Layouts.LINECOMAND.getLayout());
+            linha = scan.nextLine();
+        }
+        return texto.toString();
+    }
+
     protected void avisarEmConstrucao(){
         System.out.println("Opção em construção!");
         System.out.println("Pressione Enter para continuar...");

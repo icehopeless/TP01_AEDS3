@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import model.Pergunta;
 
 public class StateQuestionsUser extends StateView {
+    private ArrayList<Pergunta> perguntas;
     public StateQuestionsUser(){
         super();
         if(!singlePwd.getPwd().contains("Minhas perguntas")){
@@ -17,21 +18,6 @@ public class StateQuestionsUser extends StateView {
     private void pausar(){
         System.out.println(Color.GREEN.getCode() + " Pressione Enter para continuar...");
         scan.nextLine();
-    }
-
-    private String lerTexto(){
-        StringBuilder texto = new StringBuilder();
-        System.out.print(Layouts.LINECOMAND.getLayout());
-        String linha = scan.nextLine();
-        while(!linha.isBlank()){
-            if(texto.length() > 0){
-                texto.append("\n");
-            }
-            texto.append(linha);
-            System.out.print(Layouts.LINECOMAND.getLayout());
-            linha = scan.nextLine();
-        }
-        return texto.toString();
     }
 
     private int lerNumero(int max){
@@ -50,7 +36,7 @@ public class StateQuestionsUser extends StateView {
         return numero;
     }
 
-    private void mostrarLista(ArrayList<Pergunta> perguntas){
+    private void mostrarLista(){
         for(int i = 0; i < perguntas.size(); i++){
             Pergunta p = perguntas.get(i);
             String estado = p.isAtiva() ? "" : " ARQUIVADA";
@@ -63,7 +49,7 @@ public class StateQuestionsUser extends StateView {
 
     private Pergunta escolherPergunta() throws Exception{
         Pergunta escolhida = null;
-        ArrayList<Pergunta> perguntas = control.listarMinhasPerguntas();
+        perguntas = control.listarMinhasPerguntas();
         if(perguntas.isEmpty()){
             System.out.println("Você ainda não tem perguntas.");
         }else{
@@ -79,7 +65,7 @@ public class StateQuestionsUser extends StateView {
     }
 
     private void listar() throws Exception{
-        ArrayList<Pergunta> perguntas = control.listarMinhasPerguntas();
+        perguntas = control.listarMinhasPerguntas();
         if(perguntas.isEmpty()){
             System.out.println("Você ainda não tem perguntas.");
         }else{
@@ -162,6 +148,12 @@ public class StateQuestionsUser extends StateView {
                     alterar();
                 }else if(option.equals("3")){
                     arquivar();
+                }else if(option.equals("5")){
+                    byte idpergunta = lerOpcao();
+                    context.pushState(new StateResponse(perguntas.get(idpergunta)));
+                }else if(option.equals("7")){
+                    byte idpergunta = lerOpcao();
+                    context.pushState(new StateShowResponse(perguntas.get(idpergunta), control.readRespostasByPergunta(idpergunta).get(0)));
                 }else{
                     System.out.println("Opção inválida!");
                 }

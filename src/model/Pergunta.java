@@ -141,6 +141,10 @@ public class Pergunta implements Registro {
         return byteStream.toByteArray();
     }
 
+    public String showMode(){
+        return pergunta;
+    }
+
     @Override
     public void deserialize(byte[] data) throws IOException {
         ByteArrayInputStream byteStream = new ByteArrayInputStream(data);

@@ -41,6 +41,12 @@ public class ContextView {
         }while(hasNextState);
     }
 
+    public void pushState(StateView state){
+        stView.setContext(this);   
+        stView.setControl(control);
+        state.draw();     
+    }
+
     public void start(){
         render();
     }

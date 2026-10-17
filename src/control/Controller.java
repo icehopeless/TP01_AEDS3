@@ -192,5 +192,89 @@ public class Controller {
         return managerModel.getArqPergunta().update(p);
     }
 
+    
+//////////RESPOSTAS////////
 
+    public ArrayList<Resposta> readRespostasByUser(int idUsuario) throws Exception {
+        return managerEntities.getArqResposta().readByUser(idUsuario);
+    }
+
+    public ArrayList<Resposta> readRespostasByPergunta(int idPergunta) throws Exception {
+        return managerEntities.getArqResposta().readByPergunta(idPergunta);
+    }
+
+    public int addResposta(int idPergunta, String texto) throws Exception {
+        if (texto == null){
+            throw new Exception("A resposta nAo pode ser vazia");
+        } 
+
+        texto = texto.trim();
+        if (texto.length() > 256){
+            throw new Exception("A resposta excede 256 caracteres");
+        }
+            
+        int idUsuario = idUserLogado();
+        if (managerEntities.getArqUser().read(idUsuario) == null){
+            throw new Exception("Usuario nao encontrado");
+        }
+            
+        Pergunta p = managerEntities.getArqPergunta().read(idPergunta);
+        if (p == null){
+            throw new Exception("Pergunta nao encontrada");
+        }
+            
+        if (!p.isAtiva()){
+            throw new Exception("Esta pergunta esta arquivada e nao aceita respostas");
+        }
+            
+        Resposta r = new Resposta(-1, idPergunta, idUsuario, System.currentTimeMillis(), texo, 0, 0, true);
+        return managerEntities.getArqResposta().create(r);
+    }
+
+    public boolean arquivarResposta(Resposta r) throws Exception{
+        if(r.getIdUsuario() != idUserLogado()){
+            throw new IllegalAccessException ("Usuario nao correspondente");
+        }else if(!r.isAtiva()){
+            throw new IllegalAccessException ("Resposta ja arquivada");
+        }
+        
+        r.setCriacao(System.currentTimeMillis());
+        r.arquivar();
+        return managerEntities.getArquivoResposta().update(p);
+    }
+
+
+    public boolean incrementAvaliacao(int idR){
+        return managerModel.getArqResposta().incrementAvaliacao(idR);
+    }
+
+    
+    public boolean incrementNota(int idR){
+        return managerModel.getArqResposta().incrementNota(idR);
+    }
+
+    
+    public boolean decrementNota(int idR){
+        return managerModel.getArqResposta().decrementNota(idR);
+    }
+    
+    //////////AVALIACAO////////
+
+    // addAvaliação
+
+    public void addAvalaicao(Avaliacao av){
+        try{
+            managerModel.getArqAvalaiacao().create(av);
+        }catch(Exception e){
+            context.reportFail(e);
+        }
+    }
+
+    // isExistAvalaiçãoUserQuestion
+    public boolean isExistAvalaiçãoUserQuestion(int idUser){
+        return !managarModel.getArqAvalaiacao().readByUser(idUser).empty();
+    }
+
+
+    
 }
