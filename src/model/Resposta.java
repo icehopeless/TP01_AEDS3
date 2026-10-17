@@ -1,7 +1,10 @@
 package model;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
 public class Resposta implements Registro{
     private int idResposta;
@@ -15,7 +18,7 @@ public class Resposta implements Registro{
 
 
     public Resposta() {
-        this(-1,-1,-1,-1,null,-1,-1,0);
+        this(-1,-1,-1,(long)-1,null,(short)-1,(short)-1,false);
     }
 
     public Resposta(int idResposta, int idPergunta, int idUsuario, long criacao, String resposta, short nota, short avaliacoes, boolean ativa) {
@@ -138,7 +141,7 @@ public class Resposta implements Registro{
         this.idResposta = dis.readInt();
         this.idPergunta = dis.readInt();
         this.idUsuario = dis.readInt();
-        this.criacao = dis.readLong(criacao);
+        this.criacao = dis.readLong();
         this.resposta = dis.readUTF();
         this.nota = dis.readShort();
         this.avaliacoes = dis.readShort();

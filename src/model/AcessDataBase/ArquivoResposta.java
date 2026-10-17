@@ -50,40 +50,40 @@ public class ArquivoResposta extends Arquivo<Resposta>{
         ArrayList<Resposta> respostas = new ArrayList<>();
         ArrayList<ParIdId> pares = relPerguntaResposta.read(new ParIdId(idPergunta, -1));
         for(ParIdId par : pares){
-            Respostas r = super.read(par.getId2());
+            Resposta r = super.read(par.getId2());
             if(r != null){
-                respotas.add(r);
+                respostas.add(r);
             }
         }
         return respostas;
     }
 
-    public boolean incrementAvaliacao(int id){
+    public boolean incrementAvaliacao(int id) throws Exception{
         Resposta r = super.read(id);
         if(r == null || r.isAtiva()){
             return false;
         }
-        r.setAvaliacoes(r.getAvaliacoes() + 1);
+        r.setAvaliacoes((short)(r.getAvaliacoes() + 1));
         return super.update(r);
     }
 
 
-    public boolean incrementNota(int id){
+    public boolean incrementNota(int id) throws Exception{
         Resposta r = super.read(id);
         if(r == null || r.isAtiva()){
             return false;
         }
-        r.setNota(r.getNota() + 1);
+        r.setNota((short)(r.getNota() + 1));
         return super.update(r);
     }
 
 
-    public boolean decrementAvaliacao(int id){
+    public boolean decrementNota(int id) throws Exception{
         Resposta r = super.read(id);
         if(r == null || r.isAtiva()){
             return false;
         }
-        r.setNota(r.getNota() - 1);
+        r.setNota((short)(r.getNota() - 1));
         return super.update(r);
     }
 

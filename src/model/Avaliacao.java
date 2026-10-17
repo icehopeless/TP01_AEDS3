@@ -1,9 +1,20 @@
+package model;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 public class Avaliacao implements Registro{
     private int idAvaliacao;
     private int idUsuario;
     private int idResposta;
     private boolean itSelfAvaliacao;
 
+    public Avaliacao(){
+        this(-1,-1,-1,false);
+    }
     public Avaliacao(int idAv, int idUs, int idRe, boolean iSA){
         this.idAvaliacao = idAv;
         this.idUsuario = idUs;

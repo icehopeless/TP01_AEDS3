@@ -3,6 +3,7 @@ package view;
 
 import Security.Crypt;
 import control.Controller;
+import model.Pergunta;
 import model.User;
 
 public class StateResponse extends StateView {
@@ -15,6 +16,8 @@ public class StateResponse extends StateView {
         if(!singlePwd.getPwd().contains("Responder")){
             singlePwd.push("Responder");  
         }
+
+              System.out.println(singlePwd.getPwd());
     }
 
 
@@ -22,10 +25,14 @@ public class StateResponse extends StateView {
     public void draw() {
         System.out.println(Layouts.DesignTop.getLayout());
         System.out.println(question.showMode());
-        System.out.println(Layouts.DesignBottom.getLayout());
-        System.out.println(Layouts.LINECOMAND.getLayout());
+
         String textResponse = lerTexto();
 
-        control.addResposta(question.getId(),textResponse);
+        
+        try{
+            control.addResposta(question.getId(),textResponse);
+        }catch(Exception e){
+            context.reportFail(e);
+        }
     }
 }

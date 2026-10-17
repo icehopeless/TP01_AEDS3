@@ -1,11 +1,14 @@
 package control;
 
+import model.Avaliacao;
 import model.ManagerEntities;
 import model.User;
 import model.AcessDataBase.ArquivoPergunta;
 import view.ContextView;
 import java.text.Normalizer;
 import model.Pergunta;
+import model.Resposta;
+
 import  java.util.ArrayList;
 
 
@@ -196,11 +199,11 @@ public class Controller {
 //////////RESPOSTAS////////
 
     public ArrayList<Resposta> readRespostasByUser(int idUsuario) throws Exception {
-        return managerEntities.getArqResposta().readByUser(idUsuario);
+        return managerModel.getArqResposta().readByUser(idUsuario);
     }
 
     public ArrayList<Resposta> readRespostasByPergunta(int idPergunta) throws Exception {
-        return managerEntities.getArqResposta().readByPergunta(idPergunta);
+        return managerModel.getArqResposta().readByPergunta(idPergunta);
     }
 
     public int addResposta(int idPergunta, String texto) throws Exception {
@@ -214,11 +217,11 @@ public class Controller {
         }
             
         int idUsuario = idUserLogado();
-        if (managerEntities.getArqUser().read(idUsuario) == null){
+        if (managerModel.getArqUsers().read(idUsuario) == null){
             throw new Exception("Usuario nao encontrado");
         }
             
-        Pergunta p = managerEntities.getArqPergunta().read(idPergunta);
+        Pergunta p = managerModel.getArqPergunta().read(idPergunta);
         if (p == null){
             throw new Exception("Pergunta nao encontrada");
         }
@@ -227,8 +230,8 @@ public class Controller {
             throw new Exception("Esta pergunta esta arquivada e nao aceita respostas");
         }
             
-        Resposta r = new Resposta(-1, idPergunta, idUsuario, System.currentTimeMillis(), texo, 0, 0, true);
-        return managerEntities.getArqResposta().create(r);
+        Resposta r = new Resposta(-1, idPergunta, idUsuario, System.currentTimeMillis(), texto, (short) 0, (short) 0, true);
+        return managerModel.getArqResposta().create(r);
     }
 
     public boolean arquivarResposta(Resposta r) throws Exception{
@@ -240,21 +243,21 @@ public class Controller {
         
         r.setCriacao(System.currentTimeMillis());
         r.arquivar();
-        return managerEntities.getArquivoResposta().update(p);
+        return managerModel.getArqResposta().update(r);
     }
 
 
-    public boolean incrementAvaliacao(int idR){
+    public boolean incrementAvaliacao(int idR) throws Exception{
         return managerModel.getArqResposta().incrementAvaliacao(idR);
     }
 
     
-    public boolean incrementNota(int idR){
+    public boolean incrementNota(int idR) throws Exception{
         return managerModel.getArqResposta().incrementNota(idR);
     }
 
     
-    public boolean decrementNota(int idR){
+    public boolean decrementNota(int idR) throws Exception{
         return managerModel.getArqResposta().decrementNota(idR);
     }
     
@@ -262,7 +265,7 @@ public class Controller {
 
     // addAvaliação
 
-    public void addAvalaicao(Avaliacao av){
+    public void addAvaliacao(Avaliacao av){
         try{
             managerModel.getArqAvalaiacao().create(av);
         }catch(Exception e){
@@ -271,8 +274,8 @@ public class Controller {
     }
 
     // isExistAvalaiçãoUserQuestion
-    public boolean isExistAvalaiçãoUserQuestion(int idUser){
-        return !managarModel.getArqAvalaiacao().readByUser(idUser).empty();
+    public boolean isExistAvalaicaoUserQuestion(int idUser) throws Exception{
+        return !(managerModel.getArqAvalaiacao().readByUser(idUser).isEmpty());
     }
 
 

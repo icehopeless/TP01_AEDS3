@@ -7,9 +7,9 @@ public class ArquivoAvaliacao extends Arquivo<Avaliacao>{
     ArvoreBMais<ParIdId> rlRespostaAvaliacao;
     
     public ArquivoAvaliacao () throws Exception{
-        super("Avaliacaos", Avaliacao.class.getConstructor());
-        rlUsuarioAvaliacao = new ArvoreBMais<>(ParIdId.class.getConstructor(), 5, "./dados/Avaliacaos/relUsuarioAvaliacao.db");
-        rlRespostaAvaliacao = new ArvoreBMais<>(ParIdId.class.getConstructor(), 5, "./dados/Avaliacaos/relPerguntAvaliacao.db");
+        super("avaliacoes", Avaliacao.class.getConstructor());
+        rlUsuarioAvaliacao = new ArvoreBMais<>(ParIdId.class.getConstructor(), 5, "./dados/avaliacoes/relUsuarioAvaliacao.db");
+        rlRespostaAvaliacao = new ArvoreBMais<>(ParIdId.class.getConstructor(), 5, "./dados/avaliacoes/relPerguntAvaliacao.db");
     }
 
     @Override
@@ -43,7 +43,7 @@ public class ArquivoAvaliacao extends Arquivo<Avaliacao>{
                 avaliacaos.add(a);
             }
         }
-        return Avaliacaos;
+        return avaliacaos;
     }
 
     public ArrayList<Avaliacao> readByPergunta(int idPergunta) throws Exception{
@@ -51,12 +51,12 @@ public class ArquivoAvaliacao extends Arquivo<Avaliacao>{
         ArrayList<ParIdId> pares = rlRespostaAvaliacao.read(new ParIdId(idPergunta, -1));
         
         for(ParIdId par : pares){
-            Avaliacaos a = super.read(par.getId2());
+            Avaliacao a = super.read(par.getId2());
             if(a != null){
                 avaliacaos.add(a);
             }
         }
-        return Avaliacaos;
+        return avaliacaos;
     }
 
 }

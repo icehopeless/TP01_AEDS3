@@ -42,8 +42,8 @@ public class ContextView {
     }
 
     public void pushState(StateView state){
-        stView.setContext(this);   
-        stView.setControl(control);
+        state.setContext(this);   
+        state.setControl(control);
         state.draw();     
     }
 
