@@ -14,11 +14,12 @@ public class StateQuestionsUser extends StateView {
 
         System.out.println(singlePwd.getPwd());
     }
-
+    
+    /* 
     private void pausar(){
         System.out.println(Color.GREEN.getCode() + " Pressione Enter para continuar...");
         scan.nextLine();
-    }
+    }*/
 
     private int lerNumero(int max){
         System.out.println(Color.GREEN.getCode() + " Digite o número da pergunta (0 para cancelar):");

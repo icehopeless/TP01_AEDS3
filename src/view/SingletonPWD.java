@@ -50,5 +50,10 @@ public class SingletonPWD {
     public String getPwd() {
         return pwd;
     }
+
+    public boolean ultimaPagina(String page){
+        return way.equals(page) || way.endsWith(" > " + page);
+    }
+
 }
 

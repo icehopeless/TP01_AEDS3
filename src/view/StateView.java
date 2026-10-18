@@ -61,11 +61,25 @@ public abstract class StateView {
         return texto.toString();
     }
 
+    protected void pausar(){
+        System.out.println(Color.GREEN.getCode() + " Pressione Enter para continuar...");
+        scan.nextLine();
+    }
+
+    protected int paraNumero(String texto){
+        try {
+            return Integer.parseInt(texto.strip());
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
     protected void avisarEmConstrucao(){
         System.out.println("Opção em construção!");
         System.out.println("Pressione Enter para continuar...");
         scan.nextLine();
     }
+
     public void setContext(ContextView context) {
         this.context = context;
     }
