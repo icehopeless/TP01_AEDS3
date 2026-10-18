@@ -58,10 +58,26 @@ public class ArquivoResposta extends Arquivo<Resposta>{
         return respostas;
     }
 
+    //exclusao em cascata (junto com arquivadas)
+    public ArrayList<Resposta> readTodasByPergunta(int idPergunta) throws Exception{
+
+        ArrayList<Resposta> respostas = new ArrayList<>();
+        ArrayList<ParIdId> pares = relPerguntaResposta.read(new ParIdId(idPergunta, -1));
+
+        for(ParIdId par : pares){
+            Resposta r = super.read(par.getId2());
+            if(r != null){
+                respostas.add(r);
+            }
+        }
+
+        return respostas;
+    }
+
     public boolean incrementAvaliacao(int id) throws Exception{
         Resposta r = super.read(id);
   
-        if(r == null || !r.isAtiva()){
+        if(r == null){
             return false;
         }
         r.setAvaliacoes((short)(r.getAvaliacoes() + 1));
@@ -72,7 +88,7 @@ public class ArquivoResposta extends Arquivo<Resposta>{
 
     public boolean incrementNota(int id) throws Exception{
         Resposta r = super.read(id);
-        if(r == null || !r.isAtiva()){
+        if(r == null){
             return false;
         }
         r.setNota((short)(r.getNota() + 1));
@@ -82,10 +98,19 @@ public class ArquivoResposta extends Arquivo<Resposta>{
 
     public boolean decrementNota(int id) throws Exception{
         Resposta r = super.read(id);
-        if(r == null ||!r.isAtiva()){
+        if(r == null){
             return false;
         }
         r.setNota((short)(r.getNota() - 1));
+        return super.update(r);
+    }
+
+     public boolean decrementAvaliacao(int id) throws Exception{
+        Resposta r = super.read(id);
+        if(r == null){
+            return false;
+        }
+        r.setAvaliacoes((short)(r.getAvaliacoes() - 1));
         return super.update(r);
     }
 

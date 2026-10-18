@@ -46,7 +46,7 @@ public class ArquivoAvaliacao extends Arquivo<Avaliacao>{
         return avaliacaos;
     }
 
-    public ArrayList<Avaliacao> readByPergunta(int idPergunta) throws Exception{
+    public ArrayList<Avaliacao> readByResposta(int idPergunta) throws Exception{
         ArrayList<Avaliacao> avaliacaos = new ArrayList<>();
         ArrayList<ParIdId> pares = rlRespostaAvaliacao.read(new ParIdId(idPergunta, -1));
         

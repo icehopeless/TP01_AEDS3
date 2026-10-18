@@ -125,10 +125,9 @@ public class Resposta implements Registro{
 
     //Respondido por Antônio Carlos Machado em 16/09/2026 às 13:20
     public String showMode(String nomeAutor){
-        String flag;
-        flag = ativa ? "" : "|  [ARQUIVADA] ";
-        return flag + FormatterString.converteNLines(resposta) + "|  Respondido por " + nomeAutor + " em " + getCriacaoFormatada() + 
-        "\n|  Avalicoes: "  + avaliacoes + "  Nota: " + nota;
+        String flag = ativa ? "" : "|  [ARQUIVADA]\n";
+
+        return flag + FormatterString.converteNLines(resposta) + "|  Respondido por " + nomeAutor + " em " + getCriacaoFormatada() + "\n|  Nota: " + nota + "  (" + avaliacoes + " avaliações)";
     }
     
     //int idResposta, int idPergunta, int idUsuario, long criacao, String resposta, short nota, short avaliacoes, boolean ativa
