@@ -2,7 +2,7 @@ package view;
 
 public class StateMain extends StateView{
     public StateMain(){
-        super();
+        super(true);
         
         if(!singlePwd.getPwd().contains("Início")){
             singlePwd.push("Início");  

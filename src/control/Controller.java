@@ -68,7 +68,7 @@ public class Controller {
           //  newUser.setPerguntaSecreta(newUser.getPerguntaSecreta());
             return managerModel.getArqUsers().update(newUser);
         } catch (Exception e) {
-           context.reportFail(e);
+           context.reportFail(e,true);
            return false; 
         }
     }
@@ -79,7 +79,7 @@ public class Controller {
             user.setHashSenha(newHashSenha); 
             return managerModel.getArqUsers().update(user);
         } catch (Exception e) {
-           context.reportFail(e);
+           context.reportFail(e,true);
            return false; 
         }
     }
@@ -97,7 +97,7 @@ public class Controller {
         try {
             return managerModel.getArqUsers().read(email) != null ? true : false;
         } catch (Exception e) {
-            context.reportFail(e);
+            context.reportFail(e,true);
             return false;
         }
     }
@@ -113,6 +113,16 @@ public class Controller {
         }
       
         return user;
+
+    }
+
+    public String readShowUser(int id) throws Exception{
+        User user = managerModel.getArqUsers().read(id);
+        if(user == null){
+            throw new IllegalAccessException("Usuário não encontrado!");
+        }
+      
+        return user.getEmail() + ";" + user.getNome();
 
     }
 
@@ -195,6 +205,10 @@ public class Controller {
         return managerModel.getArqPergunta().update(p);
     }
 
+    public Pergunta readPergunta(int id) throws Exception{
+        return managerModel.getArqPergunta().readPergunta(id);
+    }
+
     
 //////////RESPOSTAS////////
 
@@ -247,7 +261,7 @@ public class Controller {
     }
 
 
-    public boolean incrementAvaliacao(int idR) throws Exception{
+    public boolean incrementAvaliacao(int idR) throws Exception{       
         return managerModel.getArqResposta().incrementAvaliacao(idR);
     }
 
@@ -269,13 +283,21 @@ public class Controller {
         try{
             managerModel.getArqAvalaiacao().create(av);
         }catch(Exception e){
-            context.reportFail(e);
+            context.reportFail(e,false);
         }
     }
 
-    // isExistAvalaiçãoUserQuestion
-    public boolean isExistAvalaicaoUserQuestion(int idUser) throws Exception{
-        return !(managerModel.getArqAvalaiacao().readByUser(idUser).isEmpty());
+    // existAvalaicaoUserResponse
+    public boolean existAvalaicaoUserResponse(int idUser, int idResponse) throws Exception{
+        boolean exist = false;
+        for(Avaliacao a : managerModel.getArqAvalaiacao().readByUser(idUser)){
+            if(a.getIdResposta() == idResponse){
+                exist = true;
+                break;
+            }
+        }
+
+        return exist;
     }
 
 

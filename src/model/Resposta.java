@@ -5,8 +5,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
+import Formatter.FormatterString;
 
 public class Resposta implements Registro{
+    private static final DateTimeFormatter FORMATO_DATA = DateTimeFormatter.ofPattern("dd/MM/yyyy 'às' HH:mm");
     private int idResposta;
     private int idPergunta;
     private int idUsuario;
@@ -111,9 +117,20 @@ public class Resposta implements Registro{
         return idResposta;
     }
 
-    public String showMode(){
-        return resposta;
+    public String getCriacaoFormatada() {
+    return Instant.ofEpochMilli(criacao)
+                  .atZone(ZoneId.systemDefault())
+                  .format(FORMATO_DATA);
     }
+
+    //Respondido por Antônio Carlos Machado em 16/09/2026 às 13:20
+    public String showMode(String nomeAutor){
+        String flag;
+        flag = ativa ? "" : "|  [ARQUIVADA] ";
+        return flag + FormatterString.converteNLines(resposta) + "|  Respondido por " + nomeAutor + " em " + getCriacaoFormatada() + 
+        "\n|  Avalicoes: "  + avaliacoes + "  Nota: " + nota;
+    }
+    
     //int idResposta, int idPergunta, int idUsuario, long criacao, String resposta, short nota, short avaliacoes, boolean ativa
     @Override
     public byte[] serialize() throws IOException{

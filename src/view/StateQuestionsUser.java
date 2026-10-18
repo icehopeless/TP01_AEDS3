@@ -7,7 +7,7 @@ import model.Pergunta;
 public class StateQuestionsUser extends StateView {
     
     public StateQuestionsUser(){
-        super();
+        super(true);
         if(!singlePwd.getPwd().contains("Minhas perguntas")){
             singlePwd.push("Minhas perguntas");
         }
@@ -141,8 +141,6 @@ public class StateQuestionsUser extends StateView {
             context.changeState(new StateAreaUser());
         }else{
             try {
-                 ArrayList<Pergunta> perguntas = control.listarMinhasPerguntas();
-                 System.out.println(perguntas.isEmpty());
                 if(option.equals("0")){
                     listar();
                 }else if(option.equals("1")){
@@ -151,12 +149,6 @@ public class StateQuestionsUser extends StateView {
                     alterar();
                 }else if(option.equals("3")){
                     arquivar();
-                }else if(option.equals("5")){
-                    byte idpergunta = lerOpcao();
-                    context.pushState(new StateResponse(perguntas.get(idpergunta - 1)));
-                }else if(option.equals("7")){
-                    byte idpergunta = lerOpcao();
-                    context.pushState(new StateShowResponse(perguntas.get(idpergunta - 1), control.readRespostasByPergunta(perguntas.get(idpergunta - 1).getId()).get(0)));
                 }else{
                     System.out.println("Opção inválida!");
                 }

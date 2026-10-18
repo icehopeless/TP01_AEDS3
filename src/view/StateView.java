@@ -9,7 +9,7 @@ public abstract class StateView {
     protected  Controller control;
     protected static Scanner scan;
     protected static SingletonPWD singlePwd;
-
+    private boolean isOriginState;
     protected static Scanner getTheSameScan(){
         
         if(scan == null){
@@ -22,12 +22,13 @@ public abstract class StateView {
         return scan;
     }
 
-    public StateView(){
+    public StateView(boolean isOriginState){
         clearScreen();
         singlePwd = SingletonPWD.getPwdObject();
         this.context = null;        
         this.control = null;   
-        scan = StateView.getTheSameScan(); 
+        scan = StateView.getTheSameScan();
+        this.isOriginState = isOriginState; 
     }
 
     public void clearScreen(){
@@ -77,7 +78,10 @@ public abstract class StateView {
     public Controller getControl() {
         return control;
     }
-    
+
+    public boolean isOriginState(){
+        return isOriginState;
+    }
     public abstract void draw();
     
 }

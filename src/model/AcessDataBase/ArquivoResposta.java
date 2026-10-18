@@ -51,7 +51,7 @@ public class ArquivoResposta extends Arquivo<Resposta>{
         ArrayList<ParIdId> pares = relPerguntaResposta.read(new ParIdId(idPergunta, -1));
         for(ParIdId par : pares){
             Resposta r = super.read(par.getId2());
-            if(r != null){
+            if(r != null && r.isAtiva()){
                 respostas.add(r);
             }
         }
@@ -60,17 +60,19 @@ public class ArquivoResposta extends Arquivo<Resposta>{
 
     public boolean incrementAvaliacao(int id) throws Exception{
         Resposta r = super.read(id);
-        if(r == null || r.isAtiva()){
+  
+        if(r == null || !r.isAtiva()){
             return false;
         }
         r.setAvaliacoes((short)(r.getAvaliacoes() + 1));
+        
         return super.update(r);
     }
 
 
     public boolean incrementNota(int id) throws Exception{
         Resposta r = super.read(id);
-        if(r == null || r.isAtiva()){
+        if(r == null || !r.isAtiva()){
             return false;
         }
         r.setNota((short)(r.getNota() + 1));
@@ -80,7 +82,7 @@ public class ArquivoResposta extends Arquivo<Resposta>{
 
     public boolean decrementNota(int id) throws Exception{
         Resposta r = super.read(id);
-        if(r == null || r.isAtiva()){
+        if(r == null ||!r.isAtiva()){
             return false;
         }
         r.setNota((short)(r.getNota() - 1));

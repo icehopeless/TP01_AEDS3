@@ -51,7 +51,7 @@ public class ContextView {
         render();
     }
 
-    public void reportFail(Exception e){
+    public void reportFail(Exception e, boolean callRender){
         currentState.clearScreen();
         System.out.println(e.getMessage());
         try {
@@ -60,6 +60,8 @@ public class ContextView {
             System.out.println("Erro ao tentar lag!");
         }
         
-        render();
+        if(callRender){
+            render();
+        }    
     }
 }

@@ -8,7 +8,7 @@ import model.User;
 public class StateDataUser extends StateView {
     private User user;
     public StateDataUser(){
-        super();
+        super(true);
         if(!singlePwd.getPwd().contains("Meus dados")){
             singlePwd.push("Meus dados");  
         }
@@ -17,7 +17,7 @@ public class StateDataUser extends StateView {
         try {
              user = SingletonUser.getInstanceUser();
         } catch (Exception e) {
-          context.reportFail(e);
+          context.reportFail(e,isOriginState());
         }    
     }
 
@@ -54,7 +54,7 @@ public class StateDataUser extends StateView {
             if(control.updateUser(user)){
                 context.changeState(new StateDataUser());
             }else{
-                context.reportFail(new Exception("Ocorreu um erro durante a atualização!"));
+                context.reportFail(new Exception("Ocorreu um erro durante a atualização!"),isOriginState());
             }
         }else if(option == 1){
             System.out.println("Digite o novo email: ");
@@ -74,7 +74,7 @@ public class StateDataUser extends StateView {
             if(control.updateUser(user)){
                 context.changeState(new StateDataUser());
             }else{
-                context.reportFail(new Exception("Ocorreu um erro durante a atualização!"));
+                context.reportFail(new Exception("Ocorreu um erro durante a atualização!"),isOriginState());
             }
         }else if(option == 3){
             System.out.println("Digite a nova pergunta secreta: ");
@@ -89,7 +89,7 @@ public class StateDataUser extends StateView {
             if(control.updateUser(user)){
                 context.changeState(new StateDataUser());
             }else{
-                context.reportFail(new Exception("Ocorreu um erro durante a atualização!"));
+                context.reportFail(new Exception("Ocorreu um erro durante a atualização!"),isOriginState());
             }
         }else if(option == 4){
             System.out.println("Tem certeza que deseja apagar sua conta (s/n) ? ");
@@ -108,7 +108,7 @@ public class StateDataUser extends StateView {
                                 throw new Exception("Ocorreu um erro durante a exclusão");
                             }
                         } catch (Exception e) {
-                            context.reportFail(e);
+                            context.reportFail(e,isOriginState());
                         }
                     }else{
                         context.changeState(new StateDataUser());

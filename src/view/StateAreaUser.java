@@ -2,7 +2,7 @@ package view;
 
 public class StateAreaUser extends StateView {
     public StateAreaUser(){
-        super();
+        super(true);
         if(!singlePwd.getPwd().contains("Minha Área")){
             singlePwd.push("Minha Área");  
         }
@@ -19,8 +19,7 @@ public class StateAreaUser extends StateView {
         }else if(option == 1){
             context.changeState(new StateQuestionsUser());
         }else if(option == 2){
-            avisarEmConstrucao();
-            context.changeState(new StateAreaUser());
+            context.changeState(new StateMyResponses());
         }else if(option == 3){
             avisarEmConstrucao();
             context.changeState(new StateAreaUser());

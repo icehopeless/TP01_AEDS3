@@ -11,6 +11,7 @@ public class StateResponse extends StateView {
     
 
     public StateResponse(Pergunta p){
+        super(false);
         this.question = p;
         
         if(!singlePwd.getPwd().contains("Responder")){
@@ -23,8 +24,14 @@ public class StateResponse extends StateView {
 
     @Override
     public void draw() {
+        
         System.out.println(Layouts.DesignTop.getLayout());
-        System.out.println(question.showMode());
+        try {
+            System.out.println(question.showMode(control.readShowUser(question.getIdUsuario())));
+        } catch (Exception e) {
+            context.reportFail(e, isOriginState());
+        }
+        System.out.println(Layouts.DesignBottom.getLayout());
 
         String textResponse = lerTexto();
 
@@ -32,7 +39,9 @@ public class StateResponse extends StateView {
         try{
             control.addResposta(question.getId(),textResponse);
         }catch(Exception e){
-            context.reportFail(e);
+            context.reportFail(e,isOriginState());
         }
+        
+        singlePwd.pop();
     }
 }

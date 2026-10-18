@@ -18,6 +18,10 @@ public class ArquivoPergunta extends Arquivo<Pergunta>{
         return id;
     }
 
+    public Pergunta readPergunta(int id) throws Exception{
+        Pergunta p = super.read(id);
+        return p;
+    }
     public ArrayList<Pergunta> readByUser(int idUsuario) throws Exception{
         ArrayList<Pergunta> perguntas = new ArrayList<>();
         ArrayList<ParIdId> pares = relUsuarioPergunta.read(new ParIdId(idUsuario, -1));

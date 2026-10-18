@@ -5,6 +5,7 @@ import control.SingletonUser;
 public class StateInicial extends StateView {
 
     public StateInicial(){
+        super(true);
         SingletonUser.setUser(null);
     }
     @Override
