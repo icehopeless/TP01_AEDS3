@@ -123,7 +123,6 @@ public class Resposta implements Registro{
                   .format(FORMATO_DATA);
     }
 
-    //Respondido por Antônio Carlos Machado em 16/09/2026 às 13:20
     public String showMode(String nomeAutor){
         String flag = ativa ? "" : "|  [ARQUIVADA]\n";
 
