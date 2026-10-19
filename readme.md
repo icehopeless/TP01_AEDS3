@@ -35,7 +35,7 @@ construção!".
 
 ### Apresentação do sistema
 
-- Vídeo do TP2: **[colocar o link aqui]**
+- Vídeo do TP2: https://youtu.be/b5HtPXqXGl8
 - Vídeo do TP1: https://youtu.be/DJMiSdkOcdA
 
 ### Organização do código
