@@ -11,7 +11,7 @@ public enum Layouts {
                 Color.GREEN.getCode() + 
                 "                         Terminal Question & Answer System\r\n" + //
                  Color.PURPLE.getCode() + 
-                 "                                Version 1.0.0\r\n" + //
+                 "                                Version 2.0.0\r\n" + //
                 "\r\n" + //
                 Color.GREEN.getCode() +
                 "\t┌──────────────────────────────────────────────────────────────┐\r\n" + //
