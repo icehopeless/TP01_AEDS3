@@ -106,7 +106,7 @@ public class Controller {
 
     // apaga a resposta mas  antes dela as avaliações 
     private void apagarResposta(int idResposta) throws Exception{
-        
+
         for(Avaliacao a : managerModel.getArqAvalaiacao().readByResposta(idResposta)){
             managerModel.getArqAvalaiacao().delete(a.getId());
         }
@@ -275,7 +275,7 @@ public class Controller {
 
     public int addResposta(int idPergunta, String texto) throws Exception {
         if (texto == null || texto.strip().isEmpty()){
-            throw new Exception("A resposta nAo pode ser vazia");
+            throw new Exception("A resposta não pode ser vazia");
         } 
 
         texto = texto.strip();

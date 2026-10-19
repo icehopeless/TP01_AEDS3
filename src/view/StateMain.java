@@ -18,8 +18,12 @@ public class StateMain extends StateView{
             context.changeState(new StateAreaUser());
         }else if(option == 1){
             //context.changeState(StateQuestions);
-            avisarEmConstrucao();
-            context.changeState(new StateMain());
+            //avisarEmConstrucao();
+            //context.changeState(new StateMain());
+
+            context.changeState(new StateSearchQuestions());
+
+
         }else if(option == 2){
             context.changeState(new StateInicial());
         }else{

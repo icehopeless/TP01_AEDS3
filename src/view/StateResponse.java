@@ -1,47 +1,52 @@
 package view;
 
+import java.util.function.Supplier;
 
-import Security.Crypt;
-import control.Controller;
 import model.Pergunta;
-import model.User;
 
 public class StateResponse extends StateView {
     private Pergunta question;
-    
+    private Supplier<StateView> voltar;
 
-    public StateResponse(Pergunta p){
+    public StateResponse(Pergunta p, Supplier<StateView> voltar){
         super(false);
+
         this.question = p;
-        
-        if(!singlePwd.getPwd().contains("Responder")){
-            singlePwd.push("Responder");  
+        this.voltar = voltar;
+
+        if(!singlePwd.ultimaPagina("Responder")){
+            singlePwd.push("Responder");
         }
 
-              System.out.println(singlePwd.getPwd());
+        System.out.println(singlePwd.getPwd());
     }
-
 
     @Override
     public void draw() {
-        
         System.out.println(Layouts.DesignTop.getLayout());
         try {
-            System.out.println(question.showMode(control.readShowUser(question.getIdUsuario())));
+            System.out.println(question.showMode(control.nomeUsuario(question.getIdUsuario())));
         } catch (Exception e) {
-            context.reportFail(e, isOriginState());
+            System.out.println("|  " + e.getMessage());
         }
+
         System.out.println(Layouts.DesignBottom.getLayout());
 
-        String textResponse = lerTexto();
+        System.out.println(Color.GREEN.getCode() + " Digite a resposta (linha vazia para terminar):");
 
-        
-        try{
-            control.addResposta(question.getId(),textResponse);
-        }catch(Exception e){
-            context.reportFail(e,isOriginState());
+        String texto = lerTexto();
+
+        try {
+            control.addResposta(question.getId(), texto);
+
+            System.out.println("Resposta publicada com sucesso!");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
         
+        pausar();
+
         singlePwd.pop();
+        context.changeState(voltar.get()); 
     }
 }

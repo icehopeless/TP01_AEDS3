@@ -1,79 +1,112 @@
 package view;
 
+import java.util.function.Supplier;
 
-import Security.Crypt;
-import control.Controller;
 import control.SingletonUser;
-import model.Avaliacao;
 import model.Pergunta;
 import model.Resposta;
-import model.User;
 
 public class StateShowResponse extends StateView {
     private Pergunta question;
     private Resposta response;
 
-    public StateShowResponse(Pergunta p, Resposta r){
+    private Supplier<StateView> voltar;
+
+    public StateShowResponse(Pergunta p, Resposta r, Supplier<StateView> voltar){
         super(false);
+
         this.question = p;
         this.response = r;
-         if(!singlePwd.getPwd().contains("Resposta")){
-            singlePwd.push("Resposta");  
+        this.voltar = voltar;
+
+        if(!singlePwd.ultimaPagina("Resposta")){
+            singlePwd.push("Resposta");
         }
+
         System.out.println(singlePwd.getPwd());
     }
 
     @Override
     public void draw() {
+        boolean respostaMinha = false;
+        boolean perguntaMinha = false;
 
         System.out.println(Layouts.DesignTop.getLayout());
 
         try {
-            System.out.println("|  PERGUNTA:");
-            System.out.println(question.showMode(control.readShowUser(question.getIdUsuario()).split(";")[1]));
-            System.out.println("|  RESPOSTA:");
-            System.out.println(response.showMode(control.readShowUser(response.getIdUsuario()).split(";")[1]));    
+            int idLogado = SingletonUser.getInstanceUser().getId();
+
+            respostaMinha = response.getIdUsuario() == idLogado;
+            perguntaMinha = question.getIdUsuario() == idLogado;
+
+            System.out.println(question.showMode(control.nomeUsuario(question.getIdUsuario())));
+            System.out.println("|");
+            System.out.println("|  RESPOSTA");
+            System.out.println("|  --------");
+
+            String autor = respostaMinha ? "você" : control.nomeUsuario(response.getIdUsuario());
+
+            System.out.println(response.showMode(autor));
+
         } catch (Exception e) {
-            context.reportFail(e, isOriginState());
+            System.out.println("|  " + e.getMessage());
         }
-        
-        System.out.println("\n|  (0) concordar com a resposta");
-        System.out.println("|  (1) disconcordar com a resposta\n");
 
-        System.out.println("|  (2) retornar ao menu anterior");
-        System.out.println(Layouts.DesignBottom.getLayout());
+        System.out.println("|");
 
-        System.out.print("\n" + Layouts.LINECOMAND.getLayout());
-        byte op =  lerOpcao();
+        if(respostaMinha){
+            System.out.println("|  [A] Arquivar resposta");
+        }else{
+            System.out.println("|  [A] Concordar com a resposta");
+            System.out.println("|  [B] Discordar da resposta");
 
-        try {            
-            switch (op) {
-                case 0:
-                    if(!control.existAvalaicaoUserResponse(SingletonUser.getInstanceUser().getId(), response.getIdResposta())){
-                        control.addAvaliacao(new Avaliacao(0,SingletonUser.getInstanceUser().getIdUsuario(),response.getId(),true));
-                        control.incrementAvaliacao(response.getId());
-                        control.incrementNota(response.getId());
-                    }else{
-                        context.reportFail(new Exception("Resposta já avaliada anteriormente"),isOriginState());
-                    }
-                    break;
-                case 1:
-                    if(!control.existAvalaicaoUserResponse(SingletonUser.getInstanceUser().getId(), response.getIdResposta())){
-                        control.addAvaliacao(new Avaliacao(0,SingletonUser.getInstanceUser().getIdUsuario(),response.getId(),false));
-                        control.incrementAvaliacao(response.getId());
-                        control.decrementNota(response.getId());
-                    }else{
-                        context.reportFail(new Exception("Resposta já avaliada anteriormente"),isOriginState());
-                    }
-                    break;                
-            
-                default:                            
-                    break;
+            if(perguntaMinha){
+                System.out.println("|  [C] Arquivar resposta (você é o autor da pergunta)");
             }
-            singlePwd.pop();
-        } catch (Exception e) {
-            context.reportFail(e,isOriginState());
         }
-        
+        System.out.println("|");
+        System.out.println("|  [R] Retornar ao menu anterior");
+
+        System.out.println(Layouts.DesignBottom.getLayout());
+        System.out.print(Layouts.LINECOMAND.getLayout());
+
+        String opcao = scan.nextLine().strip().toUpperCase();
+
+        if(!opcao.equals("R")){
+            try {
+                if(opcao.equals("A") && respostaMinha){
+                    arquivar();
+                }else if(opcao.equals("A")){
+                    control.avaliarResposta(response, true);
+                    System.out.println("Você concordou com a resposta.");
+                }else if(opcao.equals("B") && !respostaMinha){
+                    control.avaliarResposta(response, false);
+                    System.out.println("Você discordou da resposta.");
+                }else if(opcao.equals("C") && !respostaMinha && perguntaMinha){
+                    arquivar();
+                }else{
+                    System.out.println("Opção inválida!");
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+            pausar();
+        }
+
+        // Volta para a tela anterior e já mostra a nota nova
+        singlePwd.pop();
+        context.changeState(voltar.get());
+    }
+
+    private void arquivar() throws Exception{
+        System.out.println("Arquivar é definitivo, a resposta sai das listagens. Tem certeza (s/n) ?");
+
+        if(scan.nextLine().strip().equalsIgnoreCase("S")){
+            control.arquivarResposta(response);
+            
+            System.out.println("Resposta arquivada com sucesso!");
+        }else{
+            System.out.println("Operação cancelada.");
+        }
     }
 }

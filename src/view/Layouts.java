@@ -74,6 +74,18 @@ public enum Layouts {
                 "│                                                              │\r\n" + //
                 "└──────────────────────────────────────────────────────────────┘\r\n" + //
                 "\r\n" + Color.GREEN.getCode() +" TerminalMe "+ Color.PURPLE.getCode()+"> "),
+                
+    SearchQuestions( Color.GREEN.getCode() +
+                "┌──────────────────────────────────────────────────────────────┐\r\n" + //
+                "│                                                              │\r\n" + //
+                "│   [0]  Perguntas mais recentes                               │\r\n" + //
+                "│   [1]  Busca por palavras-chave                              │\r\n" + //
+                "│                                                              │\r\n" + //
+                "│   [2]  Retornar                                              │\r\n" + //
+                "│                                                              │\r\n" + //
+                "└──────────────────────────────────────────────────────────────┘\r\n" + //
+                "\r\n" + Color.GREEN.getCode() +" TerminalMe "+ Color.PURPLE.getCode()+"> "),
+
     DesignTop(Color.GREEN.getCode() +
                 "┌──────────────────────────────────────────────────────────────┐\r\n" + //        
                 "│                                                              │\r\n"  //
