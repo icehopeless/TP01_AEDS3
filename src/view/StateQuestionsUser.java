@@ -131,15 +131,32 @@ public class StateQuestionsUser extends StateView {
         }
     }
 
+    // Abre a pergunta escolhida com as respostas; o "Retornar" de lá volta para esta tela
+    private void visualizar(){
+        try {
+            Pergunta p = escolherPergunta();
+            if(p != null){
+                context.changeState(new StateQuestion(p.getId(), () -> new StateQuestionsUser()));
+                return;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        pausar();
+        context.changeState(new StateQuestionsUser());
+    }
+
     @Override
     public void draw() {
         
         System.out.print(Layouts.UserQuestions.getLayout());
         String option = scan.nextLine().strip();
 
-        if(option.equals("4")){
+        if(option.equals("5")){
             singlePwd.pop();
             context.changeState(new StateAreaUser());
+        }else if(option.equals("4")){
+            visualizar();
         }else{
             try {
                 if(option.equals("0")){

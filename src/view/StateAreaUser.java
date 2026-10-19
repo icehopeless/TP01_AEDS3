@@ -20,9 +20,8 @@ public class StateAreaUser extends StateView {
             context.changeState(new StateQuestionsUser());
         }else if(option == 2){
             context.changeState(new StateMyResponses());
-        }else if(option == 3){
-            avisarEmConstrucao();
-            context.changeState(new StateAreaUser());
+        } else if(option == 3){
+            context.changeState(new StateMyRatings());
         }else if(option == 4){
             singlePwd.pop();
             context.changeState(new StateMain());
