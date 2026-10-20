@@ -6,7 +6,9 @@ import control.SingletonUser;
 import model.User;
 
 public class StateLogin extends StateView {
-
+    public  StateLogin(){
+        super(true);
+    }
     @Override
     public void draw() {
         System.out.print("Deseja continuar (S/N) : ");
@@ -61,7 +63,7 @@ public class StateLogin extends StateView {
                             if(control.updateSenhaUser(email,novasenha)){
                                 context.changeState(new StateInicial());
                             }else{
-                                context.reportFail(new Exception("Ocorreu um erro durante a atualização!"));
+                                context.reportFail(new Exception("Ocorreu um erro durante a atualização!"),isOriginState());
                             }
                         }else{
                             context.changeState(new StateInicial());
@@ -72,7 +74,7 @@ public class StateLogin extends StateView {
                 }
             
             } catch (Exception e) {                
-                context.reportFail(e);
+                context.reportFail(e,isOriginState());
             }
         }        
     } 

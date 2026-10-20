@@ -1,11 +1,14 @@
 package control;
 
+import model.Avaliacao;
 import model.ManagerEntities;
 import model.User;
 import model.AcessDataBase.ArquivoPergunta;
 import view.ContextView;
 import java.text.Normalizer;
 import model.Pergunta;
+import model.Resposta;
+
 import  java.util.ArrayList;
 
 
@@ -65,7 +68,7 @@ public class Controller {
           //  newUser.setPerguntaSecreta(newUser.getPerguntaSecreta());
             return managerModel.getArqUsers().update(newUser);
         } catch (Exception e) {
-           context.reportFail(e);
+           context.reportFail(e,true);
            return false; 
         }
     }
@@ -76,25 +79,46 @@ public class Controller {
             user.setHashSenha(newHashSenha); 
             return managerModel.getArqUsers().update(user);
         } catch (Exception e) {
-           context.reportFail(e);
+           context.reportFail(e,true);
            return false; 
         }
     }
 
     public boolean deleteUser(int id) throws Exception{
-        // Cascata: apaga as perguntas antes do usuário, para não sobrar pergunta órfã
-        ArrayList<Pergunta> perguntas = managerModel.getArqPergunta().readByUser(id);
-        for(Pergunta p : perguntas){
+        // Cascata: os filhos saem antes do pai, para não sobrar órfão
+        for(Avaliacao a : managerModel.getArqAvalaiacao().readByUser(id)){
+            desfazerAvaliacao(a);
+        }
+
+        for(Resposta r : managerModel.getArqResposta().readByUser(id)){
+            apagarResposta(r.getId());
+        }
+      
+        for(Pergunta p : managerModel.getArqPergunta().readByUser(id)){
+            for(Resposta r : managerModel.getArqResposta().readTodasByPergunta(p.getId())){
+                apagarResposta(r.getId());
+            }
             managerModel.getArqPergunta().delete(p.getId());
         }
+
         return managerModel.getArqUsers().delete(id);
+    }
+
+    // apaga a resposta mas  antes dela as avaliações 
+    private void apagarResposta(int idResposta) throws Exception{
+
+        for(Avaliacao a : managerModel.getArqAvalaiacao().readByResposta(idResposta)){
+            managerModel.getArqAvalaiacao().delete(a.getId());
+        }
+
+        managerModel.getArqResposta().delete(idResposta);
     }
     
     public boolean findUser(String email) {
         try {
             return managerModel.getArqUsers().read(email) != null ? true : false;
         } catch (Exception e) {
-            context.reportFail(e);
+            context.reportFail(e,true);
             return false;
         }
     }
@@ -110,6 +134,16 @@ public class Controller {
         }
       
         return user;
+
+    }
+
+    public String readShowUser(int id) throws Exception{
+        User user = managerModel.getArqUsers().read(id);
+        if(user == null){
+            throw new IllegalAccessException("Usuário não encontrado!");
+        }
+      
+        return user.getEmail() + ";" + user.getNome();
 
     }
 
@@ -192,5 +226,186 @@ public class Controller {
         return managerModel.getArqPergunta().update(p);
     }
 
+    public Pergunta readPergunta(int id) throws Exception{
+        return managerModel.getArqPergunta().readPergunta(id);
+    }
 
+    public static final int PERGUNTAS_POR_PAGINA = 5;
+
+    public ArrayList<Pergunta> listarPerguntasRecentes(int pagina) throws Exception{
+
+        return managerModel.getArqPergunta().readRecentes(pagina, PERGUNTAS_POR_PAGINA);
+    }
+
+    public int totalPaginasRecentes() throws Exception{
+        int total = managerModel.getArqPergunta().contarRecentes();
+
+        return (total + PERGUNTAS_POR_PAGINA - 1) / PERGUNTAS_POR_PAGINA; 
+    }
+
+    public String nomeUsuario(int id) throws Exception{
+
+        User user = managerModel.getArqUsers().read(id);
+
+        if(user == null){
+            throw new IllegalAccessException("Usuário não encontrado!");
+        }
+
+        return user.getNome();
+    }
+    
+//////////RESPOSTAS////////
+
+    public ArrayList<Resposta> readRespostasByUser(int idUsuario) throws Exception {
+        return managerModel.getArqResposta().readByUser(idUsuario);
+    }
+
+    public ArrayList<Resposta> readRespostasByPergunta(int idPergunta) throws Exception {
+        ArrayList<Resposta> respostas = managerModel.getArqResposta().readByPergunta(idPergunta);
+
+        respostas.sort((a, b) -> b.getNota() - a.getNota()); // 1 a maior
+
+        return respostas;
+    }
+
+    public Resposta readResposta(int id) throws Exception {
+        return managerModel.getArqResposta().read(id);
+    }
+
+
+    public int addResposta(int idPergunta, String texto) throws Exception {
+        if (texto == null || texto.strip().isEmpty()){
+            throw new Exception("A resposta não pode ser vazia");
+        } 
+
+        texto = texto.strip();
+        if (texto.length() > 4000){
+            throw new Exception("A resposta excede 4000 caracteres");
+        }
+            
+        int idUsuario = idUserLogado();
+        if (managerModel.getArqUsers().read(idUsuario) == null){
+            throw new Exception("Usuario nao encontrado");
+        }
+            
+        Pergunta p = managerModel.getArqPergunta().read(idPergunta);
+        if (p == null){
+            throw new Exception("Pergunta nao encontrada");
+        }
+            
+        if (!p.isAtiva()){
+            throw new Exception("Esta pergunta esta arquivada e nao aceita respostas");
+        }
+            
+        Resposta r = new Resposta(-1, idPergunta, idUsuario, System.currentTimeMillis(), texto, (short) 0, (short) 0, true);
+        return managerModel.getArqResposta().create(r);
+    }
+
+    public boolean arquivarResposta(Resposta r) throws Exception{
+
+        int idLogado = idUserLogado();
+
+        Pergunta p = managerModel.getArqPergunta().read(r.getIdPergunta());
+
+        boolean autorDaResposta = r.getIdUsuario() == idLogado;
+        boolean autorDaPergunta = p != null && p.getIdUsuario() == idLogado;
+
+        if(!autorDaResposta && !autorDaPergunta){
+            throw new IllegalAccessException("Só o autor da resposta ou da pergunta pode arquivá-la");
+        }else if(!r.isAtiva()){
+            throw new IllegalAccessException("Resposta já arquivada");
+        }
+
+        r.arquivar();
+
+        return managerModel.getArqResposta().update(r);
+    }
+
+
+    public boolean incrementAvaliacao(int idR) throws Exception{       
+        return managerModel.getArqResposta().incrementAvaliacao(idR);
+    }
+
+    
+    public boolean incrementNota(int idR) throws Exception{
+        return managerModel.getArqResposta().incrementNota(idR);
+    }
+
+    
+    public boolean decrementNota(int idR) throws Exception{
+        return managerModel.getArqResposta().decrementNota(idR);
+    }
+    
+    //////////AVALIACAO////////
+
+    // addAvaliação
+
+    public void addAvaliacao(Avaliacao av){
+        try{
+            managerModel.getArqAvalaiacao().create(av);
+        }catch(Exception e){
+            context.reportFail(e,false);
+        }
+    }
+
+    // existAvalaicaoUserResponse
+    public boolean existAvalaicaoUserResponse(int idUser, int idResponse) throws Exception{
+        boolean exist = false;
+        for(Avaliacao a : managerModel.getArqAvalaiacao().readByUser(idUser)){
+            if(a.getIdResposta() == idResponse){
+                exist = true;
+                break;
+            }
+        }
+
+        return exist;
+    }
+
+    public void avaliarResposta(Resposta r, boolean positiva) throws Exception{
+
+        int idLogado = idUserLogado();
+
+        if(r.getIdUsuario() == idLogado){
+            throw new IllegalAccessException("Você não pode avaliar a própria resposta");
+        }else if(!r.isAtiva()){
+            throw new IllegalAccessException("Resposta arquivada não pode ser avaliada");
+        }else if(existAvalaicaoUserResponse(idLogado, r.getId())){
+            throw new IllegalAccessException("Você já avaliou esta resposta");
+        }
+
+        managerModel.getArqAvalaiacao().create(new Avaliacao(-1, idLogado, r.getId(), positiva));
+
+        managerModel.getArqResposta().incrementAvaliacao(r.getId());
+
+        if(positiva){
+            managerModel.getArqResposta().incrementNota(r.getId());
+        }else{
+            managerModel.getArqResposta().decrementNota(r.getId());
+        }
+    }
+
+    public ArrayList<Avaliacao> listarMinhasAvaliacoes() throws Exception{
+        return managerModel.getArqAvalaiacao().readByUser(idUserLogado());
+    }
+
+    public boolean cancelarAvaliacao(Avaliacao a) throws Exception{
+        if(a.getIdUsuario() != idUserLogado()){
+            throw new IllegalAccessException("Esta avaliação não é sua");
+        }
+        return desfazerAvaliacao(a);
+    }
+
+    private boolean desfazerAvaliacao(Avaliacao a) throws Exception{
+
+        if(a.getItSelfAvalaiacao()){
+            managerModel.getArqResposta().decrementNota(a.getIdResposta());
+        }else{
+            managerModel.getArqResposta().incrementNota(a.getIdResposta());
+        }
+
+        managerModel.getArqResposta().decrementAvaliacao(a.getIdResposta());
+
+        return managerModel.getArqAvalaiacao().delete(a.getId());
+    }
+    
 }

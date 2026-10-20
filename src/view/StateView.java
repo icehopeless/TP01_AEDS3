@@ -9,7 +9,7 @@ public abstract class StateView {
     protected  Controller control;
     protected static Scanner scan;
     protected static SingletonPWD singlePwd;
-
+    private boolean isOriginState;
     protected static Scanner getTheSameScan(){
         
         if(scan == null){
@@ -22,12 +22,13 @@ public abstract class StateView {
         return scan;
     }
 
-    public StateView(){
+    public StateView(boolean isOriginState){
         clearScreen();
         singlePwd = SingletonPWD.getPwdObject();
         this.context = null;        
         this.control = null;   
-        scan = StateView.getTheSameScan(); 
+        scan = StateView.getTheSameScan();
+        this.isOriginState = isOriginState; 
     }
 
     public void clearScreen(){
@@ -45,11 +46,40 @@ public abstract class StateView {
         return option;
     }
 
+    protected String lerTexto(){
+        StringBuilder texto = new StringBuilder();
+        System.out.print(Layouts.LINECOMAND.getLayout());
+        String linha = scan.nextLine();
+        while(!linha.isBlank()){
+            if(texto.length() > 0){
+                texto.append("\n");
+            }
+            texto.append(linha);
+            System.out.print(Layouts.LINECOMAND.getLayout());
+            linha = scan.nextLine();
+        }
+        return texto.toString();
+    }
+
+    protected void pausar(){
+        System.out.println(Color.GREEN.getCode() + " Pressione Enter para continuar...");
+        scan.nextLine();
+    }
+
+    protected int paraNumero(String texto){
+        try {
+            return Integer.parseInt(texto.strip());
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
     protected void avisarEmConstrucao(){
         System.out.println("Opção em construção!");
         System.out.println("Pressione Enter para continuar...");
         scan.nextLine();
     }
+
     public void setContext(ContextView context) {
         this.context = context;
     }
@@ -62,7 +92,10 @@ public abstract class StateView {
     public Controller getControl() {
         return control;
     }
-    
+
+    public boolean isOriginState(){
+        return isOriginState;
+    }
     public abstract void draw();
     
 }

@@ -3,14 +3,20 @@ package model;
 import control.Controller;
 import model.AcessDataBase.ArquivoUser;
 import model.AcessDataBase.ArquivoPergunta;
+import model.AcessDataBase.ArquivoResposta;
+import model.AcessDataBase.ArquivoAvaliacao;
 
 public class ManagerEntities{
-    ArquivoUser arqUsers;
-    ArquivoPergunta arqPergunta;
+    private ArquivoUser arqUsers;
+    private ArquivoPergunta arqPergunta;
+    private ArquivoResposta arqResposta;
+    private ArquivoAvaliacao arqAvaliacao;
     private Controller control;
-    public ManagerEntities(ArquivoUser arqUsers, ArquivoPergunta arqPergunta) throws Exception{
+    public ManagerEntities(ArquivoUser arqUsers, ArquivoPergunta arqPergunta, ArquivoResposta arqResposta, ArquivoAvaliacao arqAva) throws Exception{
         this.arqUsers = arqUsers;
         this.arqPergunta = arqPergunta;
+        this.arqResposta = arqResposta;
+        this.arqAvaliacao = arqAva;
     }
 
     public void setControl(Controller control) {
@@ -24,5 +30,13 @@ public class ManagerEntities{
 
     public ArquivoPergunta getArqPergunta(){
         return arqPergunta;
+    }
+
+    public ArquivoResposta getArqResposta(){
+        return arqResposta;
+    }
+
+    public ArquivoAvaliacao getArqAvalaiacao(){
+        return arqAvaliacao;
     }
 }

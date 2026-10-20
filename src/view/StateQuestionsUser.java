@@ -5,34 +5,21 @@ import java.util.ArrayList;
 import model.Pergunta;
 
 public class StateQuestionsUser extends StateView {
+    
     public StateQuestionsUser(){
-        super();
+        super(true);
         if(!singlePwd.getPwd().contains("Minhas perguntas")){
             singlePwd.push("Minhas perguntas");
         }
 
         System.out.println(singlePwd.getPwd());
     }
-
+    
+    /* 
     private void pausar(){
         System.out.println(Color.GREEN.getCode() + " Pressione Enter para continuar...");
         scan.nextLine();
-    }
-
-    private String lerTexto(){
-        StringBuilder texto = new StringBuilder();
-        System.out.print(Layouts.LINECOMAND.getLayout());
-        String linha = scan.nextLine();
-        while(!linha.isBlank()){
-            if(texto.length() > 0){
-                texto.append("\n");
-            }
-            texto.append(linha);
-            System.out.print(Layouts.LINECOMAND.getLayout());
-            linha = scan.nextLine();
-        }
-        return texto.toString();
-    }
+    }*/
 
     private int lerNumero(int max){
         System.out.println(Color.GREEN.getCode() + " Digite o número da pergunta (0 para cancelar):");
@@ -144,14 +131,32 @@ public class StateQuestionsUser extends StateView {
         }
     }
 
+    // Abre a pergunta escolhida com as respostas; o "Retornar" de lá volta para esta tela
+    private void visualizar(){
+        try {
+            Pergunta p = escolherPergunta();
+            if(p != null){
+                context.changeState(new StateQuestion(p.getId(), () -> new StateQuestionsUser()));
+                return;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        pausar();
+        context.changeState(new StateQuestionsUser());
+    }
+
     @Override
     public void draw() {
+        
         System.out.print(Layouts.UserQuestions.getLayout());
         String option = scan.nextLine().strip();
 
-        if(option.equals("4")){
+        if(option.equals("5")){
             singlePwd.pop();
             context.changeState(new StateAreaUser());
+        }else if(option.equals("4")){
+            visualizar();
         }else{
             try {
                 if(option.equals("0")){

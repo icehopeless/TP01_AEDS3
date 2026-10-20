@@ -6,7 +6,9 @@ import control.Controller;
 import model.User;
 
 public class StateCreateAccount extends StateView {
-
+    public  StateCreateAccount(){
+        super(true);
+    }
     @Override
     public void draw() {
         System.out.print("Deseja continuar (S/N) : ");
@@ -41,7 +43,7 @@ public class StateCreateAccount extends StateView {
                     control.addUser(user);
                     context.changeState(new StateInicial());
                 } catch (Exception e) {
-                    context.reportFail(e);
+                    context.reportFail(e,isOriginState());
                 }
             }else{
                 System.out.println("Email já cadastrado tente novamente!");

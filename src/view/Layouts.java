@@ -11,7 +11,7 @@ public enum Layouts {
                 Color.GREEN.getCode() + 
                 "                         Terminal Question & Answer System\r\n" + //
                  Color.PURPLE.getCode() + 
-                 "                                Version 1.0.0\r\n" + //
+                 "                                Version 2.0.0\r\n" + //
                 "\r\n" + //
                 Color.GREEN.getCode() +
                 "\t┌──────────────────────────────────────────────────────────────┐\r\n" + //
@@ -43,7 +43,7 @@ public enum Layouts {
                 "│   [0]  Meus dados                                            │\r\n" + //
                 "│   [1]  Minhas perguntas                                      │\r\n" + //
                 "│   [2]  Minhas respostas                                      │\r\n" + //
-                "│   [3]  Meus votos                                            │\r\n" + //
+                "│   [3]  Minhas avaliações                                     │\r\n" + //
                 "│                                                              │\r\n" + //
                 "│   [4]  Retornar ao menu anterior                             │\r\n" + //
                 "│                                                              │\r\n" + //
@@ -69,11 +69,24 @@ public enum Layouts {
                 "│   [1]  Incluir                                               │\r\n" + //
                 "│   [2]  Alterar                                               │\r\n" + //
                 "│   [3]  Arquivar                                              │\r\n" + //
+                "│   [4]  Visualizar pergunta e respostas                       │\r\n" + //
                 "│                                                              │\r\n" + //
-                "│   [4]  Retornar ao menu anterior                             │\r\n" + //
+                "│   [5]  Retornar ao menu anterior                             │\r\n" + //
                 "│                                                              │\r\n" + //
                 "└──────────────────────────────────────────────────────────────┘\r\n" + //
                 "\r\n" + Color.GREEN.getCode() +" TerminalMe "+ Color.PURPLE.getCode()+"> "),
+                
+    SearchQuestions( Color.GREEN.getCode() +
+                "┌──────────────────────────────────────────────────────────────┐\r\n" + //
+                "│                                                              │\r\n" + //
+                "│   [0]  Perguntas mais recentes                               │\r\n" + //
+                "│   [1]  Busca por palavras-chave                              │\r\n" + //
+                "│                                                              │\r\n" + //
+                "│   [2]  Retornar                                              │\r\n" + //
+                "│                                                              │\r\n" + //
+                "└──────────────────────────────────────────────────────────────┘\r\n" + //
+                "\r\n" + Color.GREEN.getCode() +" TerminalMe "+ Color.PURPLE.getCode()+"> "),
+
     DesignTop(Color.GREEN.getCode() +
                 "┌──────────────────────────────────────────────────────────────┐\r\n" + //        
                 "│                                                              │\r\n"  //

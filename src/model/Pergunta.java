@@ -9,6 +9,8 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
+import Formatter.FormatterString;
+
 public class Pergunta implements Registro {
 
     private static final DateTimeFormatter FORMATO_DATA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -139,6 +141,12 @@ public class Pergunta implements Registro {
         dataStream.writeBoolean(ativa);
 
         return byteStream.toByteArray();
+    }
+
+    public String showMode(String nomeAutor){
+        String flag;
+        flag = ativa ? "" : "[ARQUIVADA] ";
+        return flag + FormatterString.converteNLines(pergunta) + "|  Pergunta criada por " + nomeAutor + " em " + getCriacaoFormatada();
     }
 
     @Override
